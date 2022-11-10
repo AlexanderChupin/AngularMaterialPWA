@@ -13,7 +13,11 @@ module.exports = function (config) {
       require('@angular-devkit/build-angular/plugins/karma')
     ],
     client: {
-      clearContext: false // leave Jasmine Spec Runner output visible in browser
+      clearContext: false, // leave Jasmine Spec Runner output visible in browser
+      // [\{random = false\} has unexpected behaviour · Issue \#226 · karma\-runner/karma\-jasmine](https://github.com/karma-runner/karma-jasmine/issues/226)
+      jasmine: {
+        random: false
+      }
     },
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, '../coverage'),
@@ -26,6 +30,10 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: ['Chrome'],
-    singleRun: false
+    singleRun: false,
+    captureTimeout: 210000,
+    browserDisconnectTolerance: 3,
+    browserDisconnectTimeout : 210000,
+    browserNoActivityTimeout : 210000,
   });
 };

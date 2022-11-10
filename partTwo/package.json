@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng build --prod && http-server ./dist/AngularPwaPostOne",
-    "build": "ng build --prod",
+    "start": "ng build --configuration=production && http-server ./dist/AngularPwaPostOne",
+    "build": "ng build --configuration=production",
     "serve": "ng serve",
     "test": "ng test",
     "lint": "ng lint",
@@ -24,11 +24,12 @@
     "@angular/pwa": "^14.2.5",
     "@angular/router": "^14.2.5",
     "@angular/service-worker": "^14.2.5",
+    "@aws-amplify/ui-angular": "^2.4.25",
+    "aws-amplify": "^4.3.37",
     "core-js": "^3.25.5",
     "hammerjs": "^2.0.8",
     "rxjs": "~7.5.7",
-    "zone.js": "~0.11.8",
-    "aws-amplify": "^4.3.37"
+    "zone.js": "~0.11.8"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.2.5",
@@ -38,7 +39,7 @@
     "@types/jasmine": "~3.3.10",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~11.11.3",
-    "codelyzer": "^6.0.2",
+    "codelyzer": "^0.0.28",
     "http-server": "^13.0.1",
     "jasmine-core": "~4.4.0",
     "jasmine-spec-reporter": "~7.0.0",

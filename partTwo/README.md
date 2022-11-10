@@ -39,3 +39,18 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+## ALC. Playing with e2e tests
+- [protractor/timeouts\.md at master · angular/protractor](https://github.com/angular/protractor/blob/master/docs/timeouts.md#waiting-for-angular-on-page-load)
+- [Protractor \- end\-to\-end testing for AngularJS](https://www.protractortest.org/#/locators)
+- [Future of Angular E2E & Plans for Protractor · Issue \#5502 · angular/protractor](https://github.com/angular/protractor/issues/5502)
+- [continuous integration \- What is the difference between "npm install" and "npm ci"? \- Stack Overflow](https://stackoverflow.com/questions/52499617/what-is-the-difference-between-npm-install-and-npm-ci)
+- [Recovering from the Git detached HEAD state \| CircleCI](https://circleci.com/blog/git-detached-head-state/#:~:text=In%20Git%2C%20HEAD%20refers%20to,commit%20in%20the%20main%20branch.)
+
+## ALC. Fixing Jasmin tests
+- [Sidenav \| Angular Material](https://material.angular.io/components/sidenav/examples)
+- [Angular Components \- Testing with MatSidenavHarness \- StackBlitz](https://stackblitz.com/run?file=src%2Fmaterial.module.ts,src%2Fapp%2Fapp.module.ts)
+- [Debug JavaScript in Chrome \| IntelliJ IDEA](https://www.jetbrains.com/help/idea/debugging-javascript-in-chrome.html)
+- [How to debug ES6 jasmine tests and set breakpoints from PhpStorm? – IDEs Support \(IntelliJ Platform\) \| JetBrains](https://intellij-support.jetbrains.com/hc/en-us/community/posts/115000478570-How-to-debug-ES6-jasmine-tests-and-set-breakpoints-from-PhpStorm-)
+- [How to import Angular Material in project? \- Stack Overflow](https://stackoverflow.com/questions/45166844/how-to-import-angular-material-in-project)
+- [Angular \- RouterTestingModule](https://angular.io/api/router/testing/RouterTestingModule)
