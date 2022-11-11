@@ -54,3 +54,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - [How to debug ES6 jasmine tests and set breakpoints from PhpStorm? – IDEs Support \(IntelliJ Platform\) \| JetBrains](https://intellij-support.jetbrains.com/hc/en-us/community/posts/115000478570-How-to-debug-ES6-jasmine-tests-and-set-breakpoints-from-PhpStorm-)
 - [How to import Angular Material in project? \- Stack Overflow](https://stackoverflow.com/questions/45166844/how-to-import-angular-material-in-project)
 - [Angular \- RouterTestingModule](https://angular.io/api/router/testing/RouterTestingModule)
+
+## ALC. Debugging Angular application
+- [Angular \| IntelliJ IDEA](https://www.jetbrains.com/help/idea/angular.html#angular_running_and_debugging)
+- [Running and debugging TypeScript \| IntelliJ IDEA](https://www.jetbrains.com/help/idea/running-and-debugging-typescript.html)

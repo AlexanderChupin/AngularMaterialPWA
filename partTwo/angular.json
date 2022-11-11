@@ -58,6 +58,15 @@
                 }
               ],
               "serviceWorker": true
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "aot": false
             }
           }
         },
@@ -69,6 +78,9 @@
           "configurations": {
             "production": {
               "browserTarget": "AngularPwaPostOne:build:production"
+            },
+            "development": {
+              "browserTarget": "AngularPwaPostOne:build:development"
             }
           }
         },
