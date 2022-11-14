@@ -58,3 +58,14 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ## ALC. Debugging Angular application
 - [Angular \| IntelliJ IDEA](https://www.jetbrains.com/help/idea/angular.html#angular_running_and_debugging)
 - [Running and debugging TypeScript \| IntelliJ IDEA](https://www.jetbrains.com/help/idea/running-and-debugging-typescript.html)
+
+## ALC. Upgrading Amplify 
+- [Migration & Backwards Compatibility \- Migration to enabled override feature \- AWS Amplify Docs](https://docs.amplify.aws/cli/migration/override/)
+
+## ALC. Learning Amplify
+- [Quickstart. Amplify toolchain](https://kaustavghosh06.github.io/docs/cli-toolchain/quickstart)
+
+## ALC. Resolving errors and IDE upgrade
+- Warning: 'C:\Users\AChupin\PhpstormProjects\AngularMaterialPWA\partTwo\src\styles.scss' imports '~@angular/material/theming' with a tilde. Usage of '~' in imports is deprecated. [Sass @use / @import statements without tilde aren't being resolved correctly : WEB\-53120](https://youtrack.jetbrains.com/issue/WEB-53120/Sass-use-import-statements-without-tilde-arent-being-resolved-correctly)
+- Go to PhpStorm account page and find fallback license [JetBrains Account](https://account.jetbrains.com/licenses)
+- [Download PhpStorm 2020\.3\.3](https://www.jetbrains.com/shop/download/PS/2020300?_ga=2.126951499.776827484.1668343899-1519556294.1618289126&_gl=1*1oi8rcu*_ga*MTUxOTU1NjI5NC4xNjE4Mjg5MTI2*_ga_9J976DJZ68*MTY2ODQyNzQ4NS45LjEuMTY2ODQyODEzNS4wLjAuMA..)
