@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, OnChanges, SimpleChanges, NgZone, ChangeDetectorRef} from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -12,7 +12,7 @@ import { LoaderService } from 'src/app/loader/loader.service';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnChanges {
   profileForm: FormGroup = new FormGroup({
     email: new FormControl('',[ Validators.email ]),
     phone: new FormControl('', [ Validators.min(10) ]),
@@ -24,21 +24,33 @@ export class ProfileComponent implements OnInit {
   deleteAvatar = false;
   profile:any = {};
   user: CognitoUser;
-  
+
   get emailInput() { return this.profileForm.get('email'); }
   get fnameInput() { return this.profileForm.get('fname'); }
   get lnameInput() { return this.profileForm.get('lname'); }
   get phoneInput() { return this.profileForm.get('phone'); }
 
-  constructor( 
+  constructor(
     private _authService: AuthService,
     private _router: Router,
     private _notification: NotificationService,
-    public loading: LoaderService ) { }
+    public loading: LoaderService ,
+    private _zone: NgZone,
+    private _changeDetectorRef: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
     this.loading.show();
     this.getUserInfo();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    for (const propName in changes) {
+      const chng = changes[propName];
+      const cur  = JSON.stringify(chng.currentValue);
+      const prev = JSON.stringify(chng.previousValue);
+      console.log(`${propName}: currentValue = ${cur}, previousValue = ${prev}`);
+    }
   }
 
   async getUserInfo() {
@@ -71,12 +83,20 @@ export class ProfileComponent implements OnInit {
   onAvatarUploadComplete(data: any) {
     this.avatar = data.key;
     this.loading.hide();
+    this._zone.run(()=>{
+      console.log('ALC. ProfileComponent this._zone.run called')
+    })
+
+    // this._changeDetectorRef.detectChanges();
   }
 
   onAvatarRemove() {
     this.avatar = undefined;
     this.currentAvatarUrl = undefined;
     this.deleteAvatar = true;
+    //this._changeDetectorRef.detectChanges();
+    // this._changeDetectorRef.reattach();
+    // this._zone.run(()=>{});
   }
 
   async editProfile() {
@@ -101,6 +121,10 @@ export class ProfileComponent implements OnInit {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  showDialog = ()=>{
+    this.loading.show()
   }
 
 }

@@ -65,12 +65,12 @@
             },
             "development": {
               "buildOptimizer": false,
-              "optimization": false,
+              "optimization": true,
               "vendorChunk": false,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true,
-              "aot": false
+              "aot": true
             }
           }
         },

@@ -1,4 +1,14 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  NgZone
+} from '@angular/core';
 import Storage from '@aws-amplify/storage';
 import { NotificationService } from 'src/app/services/notification.service';
 import { CompressorService } from 'src/app/services/compressor.service';
@@ -8,7 +18,20 @@ import { CompressorService } from 'src/app/services/compressor.service';
   templateUrl: './avatar.component.html',
   styleUrls: ['./avatar.component.scss']
 })
-export class AvatarComponent {
+export class AvatarComponent implements OnChanges{
+
+  ngOnChanges(changes: SimpleChanges) {
+    for (const propName in changes) {
+      const chng = changes[propName];
+      const cur  = JSON.stringify(chng.currentValue);
+      const prev = JSON.stringify(chng.previousValue);
+      console.log(`${propName}: currentValue = ${cur}, previousValue = ${prev}`);
+    }
+  }
+
+  ngDoCheck() {
+    console.log('ALC. AvatarComponent ngDoCheck called')
+  }
 
   photoUrl: string;
   hasPhoto: boolean = false;
@@ -17,7 +40,7 @@ export class AvatarComponent {
   s3ImagePath: string = "avatar";
   errorMessage: string;
   previewClass = "app-avatar-upload";
-  
+
   private _storageOptions: any = { 'level': 'private' };
   private _previewClassIdle = "app-avatar-upload";
   private _previewClassOver = "app-avatar-upload-dragover"
@@ -51,7 +74,7 @@ export class AvatarComponent {
 
   @Output()
   loaded: EventEmitter<string> = new EventEmitter<string>();
-  
+
   @Output()
   uploaded: EventEmitter<Object> = new EventEmitter<Object>();
 
@@ -59,14 +82,16 @@ export class AvatarComponent {
   removed: EventEmitter<null> = new EventEmitter<null>();
 
   constructor( private notification: NotificationService,
-               private compressor: CompressorService ) {}
+               private compressor: CompressorService,
+               private _ref: ChangeDetectorRef,
+               private _zone: NgZone) {}
 
   pick(evt) {
     let file = null;
     if (evt.target.files) {
       file = evt.target.files[0];
     }
-    if (!file && evt.dataTransfer.files) { 
+    if (!file && evt.dataTransfer.files) {
       file = evt.dataTransfer.files[0];
     }
     if (!file) { return; }
@@ -95,7 +120,9 @@ export class AvatarComponent {
           const url = target.result;
           that.photoUrl = url;
           that.hasPhoto = true;
-          that.loaded.emit(url);
+          that._zone.run(()=>{
+            that.loaded.emit(url);
+          })
           that.uploadFile();
         };
         reader.readAsDataURL(file);
@@ -105,12 +132,13 @@ export class AvatarComponent {
 
   uploadFile() {
   	this.uploading = true;
-  	Storage.put( 
-  			this.s3ImagePath, 
+  	Storage.put(
+  			this.s3ImagePath,
   			this.s3ImageFile, this._storageOptions)
 		.then ( (result:any) => {
       this.uploaded.emit(result);
 			this.completeFileUpload();
+			this._ref.reattach();
 		})
 		.catch( error => {
 			this.completeFileUpload(error);
@@ -122,10 +150,12 @@ export class AvatarComponent {
   		return this._setError(error);
   	}
     this.uploading = false;
+    // this.previewClass = "app-avatar-upload1"
   }
 
-  onPhotoError() {
+  onPhotoError(e: Event) {
     this.hasPhoto = false;
+    console.log('onPhotoError event='+ e.type);
   }
 
   onAlertClose() {
@@ -147,6 +177,11 @@ export class AvatarComponent {
     event.stopPropagation();
     event.preventDefault();
     this.previewClass = this._previewClassIdle;
+  }
+
+  onRemove (event: Event) {
+    this.removed.emit();
+    this.hasPhoto=false
   }
 
   _setError(err) {
