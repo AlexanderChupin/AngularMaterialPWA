@@ -81,3 +81,5 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - [Angular File Upload \- Complete Guide](https://blog.angular-university.io/angular-file-upload/)
 - [What the heck is the event loop anyway? \| Philip Roberts \| JSConf EU \- YouTube](https://www.youtube.com/watch?v=8aGhZQkoFbQ&ab_channel=JSConf)
 
+тест
+
