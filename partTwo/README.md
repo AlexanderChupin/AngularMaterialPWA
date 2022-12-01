@@ -69,3 +69,15 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - Warning: 'C:\Users\AChupin\PhpstormProjects\AngularMaterialPWA\partTwo\src\styles.scss' imports '~@angular/material/theming' with a tilde. Usage of '~' in imports is deprecated. [Sass @use / @import statements without tilde aren't being resolved correctly : WEB\-53120](https://youtrack.jetbrains.com/issue/WEB-53120/Sass-use-import-statements-without-tilde-arent-being-resolved-correctly)
 - Go to PhpStorm account page and find fallback license [JetBrains Account](https://account.jetbrains.com/licenses)
 - [Download PhpStorm 2020\.3\.3](https://www.jetbrains.com/shop/download/PS/2020300?_ga=2.126951499.776827484.1668343899-1519556294.1618289126&_gl=1*1oi8rcu*_ga*MTUxOTU1NjI5NC4xNjE4Mjg5MTI2*_ga_9J976DJZ68*MTY2ODQyNzQ4NS45LjEuMTY2ODQyODEzNS4wLjAuMA..)
+
+## ALC. Expliring Angular life-cicle
+
+- [javascript \- Does change detection in angular2 always start in root component? \- Stack Overflow](https://stackoverflow.com/questions/36489764/does-change-detection-in-angular2-always-start-in-root-component)
+- Zone.js Github repo [angular/packages/zone\.js at main · angular/angular](https://github.com/angular/angular/tree/main/packages/zone.js)  
+- Zone.js explained [Brian Ford \- Zones \- NG\-Conf 2014 \- YouTube](https://www.youtube.com/watch?v=3IqtmUscE_U&t=150s&ab_channel=ng-conf)
+- [Zones in Angular \| Articles by thoughtram](https://blog.thoughtram.io/angular/2016/02/01/zones-in-angular-2.html)
+- [Angular Change Detection Explained \| Articles by thoughtram](https://blog.thoughtram.io/angular/2016/02/22/angular-2-change-detection-explained.html)  
+- [Angular Template Syntax Demystified \- Part 1 \| Articles by thoughtram](https://blog.thoughtram.io/angular/2015/08/11/angular-2-template-syntax-demystified-part-1.html)  
+- [Angular File Upload \- Complete Guide](https://blog.angular-university.io/angular-file-upload/)
+- [What the heck is the event loop anyway? \| Philip Roberts \| JSConf EU \- YouTube](https://www.youtube.com/watch?v=8aGhZQkoFbQ&ab_channel=JSConf)
+

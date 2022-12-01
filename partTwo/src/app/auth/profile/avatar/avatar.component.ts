@@ -1,17 +1,8 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnChanges,
-  SimpleChanges,
-  ChangeDetectorRef,
-  ChangeDetectionStrategy,
-  NgZone
-} from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectorRef, /*ChangeDetectionStrategy,*/ NgZone } from '@angular/core';
 import Storage from '@aws-amplify/storage';
 import { NotificationService } from 'src/app/services/notification.service';
 import { CompressorService } from 'src/app/services/compressor.service';
+// import {Observable, Observer} from "rxjs";
 
 @Component({
   selector: 'app-avatar',
@@ -120,12 +111,20 @@ export class AvatarComponent implements OnChanges{
           const url = target.result;
           that.photoUrl = url;
           that.hasPhoto = true;
+          // FileReader executes outside of NgZone. Emit update event and return execution back to NgZone
           that._zone.run(()=>{
             that.loaded.emit(url);
           })
           that.uploadFile();
         };
         reader.readAsDataURL(file);
+        //ALC. unsuccessful implementation of the article javascript - Angular 2/4 FileReader Service - Stack Overflow https://stackoverflow.com/questions/47062994/angular-2-4-filereader-service
+        /*this.uploadImage(file).subscribe((url: string) => {
+          // Do what you want with the image here
+          this.photoUrl = url;
+          this.hasPhoto = true;
+          this.loaded.emit(url);
+        });*/
       }
     );
   }
@@ -192,4 +191,15 @@ export class AvatarComponent implements OnChanges{
     this.errorMessage = err.message || err;
   }
 
+  //ALC. unsuccessful implementation of the article javascript - Angular 2/4 FileReader Service - Stack Overflow https://stackoverflow.com/questions/47062994/angular-2-4-filereader-service
+  /*uploadImage(file: File) {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    return new Observable( (observer: Observer<string | ArrayBuffer>) => {
+      reader.onloadend = () => {
+        observer.next(reader.result);
+        observer.complete();
+      };
+    });
+  }*/
 }

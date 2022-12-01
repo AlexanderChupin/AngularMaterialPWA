@@ -6,6 +6,7 @@ import Auth, { CognitoUser } from '@aws-amplify/auth';
 import Storage from '@aws-amplify/storage';
 import { NotificationService } from 'src/app/services/notification.service';
 import { LoaderService } from 'src/app/loader/loader.service';
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-profile',
@@ -24,6 +25,7 @@ export class ProfileComponent implements OnInit, OnChanges {
   deleteAvatar = false;
   profile:any = {};
   user: CognitoUser;
+  omTurnObservable: Observable<any>;
 
   get emailInput() { return this.profileForm.get('email'); }
   get fnameInput() { return this.profileForm.get('fname'); }
@@ -36,12 +38,17 @@ export class ProfileComponent implements OnInit, OnChanges {
     private _notification: NotificationService,
     public loading: LoaderService ,
     private _zone: NgZone,
-    private _changeDetectorRef: ChangeDetectorRef
+    private _changeDetector: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
     this.loading.show();
     this.getUserInfo();
+    this._zone.onUnstable.subscribe({
+      next: ()=>{
+        console.log ('ALC. NgZone.onUnstable called')
+      }
+    })
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -86,8 +93,6 @@ export class ProfileComponent implements OnInit, OnChanges {
     this._zone.run(()=>{
       console.log('ALC. ProfileComponent this._zone.run called')
     })
-
-    // this._changeDetectorRef.detectChanges();
   }
 
   onAvatarRemove() {
@@ -126,5 +131,11 @@ export class ProfileComponent implements OnInit, OnChanges {
   showDialog = ()=>{
     this.loading.show()
   }
+
+  onAvatarLoad (data: any){
+    this.loading.show();
+    // this.currentAvatarUrl = (new Date()).toString();
+  }
+
 
 }

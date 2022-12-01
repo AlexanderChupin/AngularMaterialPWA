@@ -1,10 +1,4 @@
-import {
-  Component,
-  ChangeDetectorRef,
-  EventEmitter,
-  Output,
-  OnInit
-} from "@angular/core";
+import { Component, ChangeDetectorRef, EventEmitter, Output, OnInit } from "@angular/core";
 import { MediaMatcher } from "@angular/cdk/layout";
 import { MatSidenav } from "@angular/material/sidenav";
 import { MatSnackBar } from "@angular/material/snack-bar";

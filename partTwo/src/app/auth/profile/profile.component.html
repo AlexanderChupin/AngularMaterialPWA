@@ -19,7 +19,7 @@
     <label>Profile Picture</label>
     <app-avatar
       [url]="currentAvatarUrl"
-      (loaded)="this.loading.show()"
+      (loaded)="onAvatarLoad($event)"
       (uploaded)="onAvatarUploadComplete($event)"
       (removed)="onAvatarRemove()">
     </app-avatar>
