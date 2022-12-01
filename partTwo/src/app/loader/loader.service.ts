@@ -25,7 +25,6 @@ export class LoaderService {
     if (this.dialogRef) {
       this.dialogRef.close();
       this.loading = false;
-      // this.dialogRef.componentInstance.ref.detectChanges();
     }
   }
 }

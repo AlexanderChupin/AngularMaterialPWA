@@ -19,7 +19,7 @@
     <label>Profile Picture</label>
     <app-avatar
       [url]="currentAvatarUrl"
-      (loaded)="onAvatarLoad($event)"
+      (loaded)="this.loading.show()"
       (uploaded)="onAvatarUploadComplete($event)"
       (removed)="onAvatarRemove()">
     </app-avatar>
@@ -27,6 +27,5 @@
 
   <button mat-raised-button color="primary" (click)="editProfile()" [disabled]="loading.loading || !profileForm.valid">Save</button>
   <button mat-raised-button (click)="signOut()" class="signout">Sign Out</button>
-    <button mat-raised-button color="primary" (click)="showDialog()" >Show</button>
   </form>
 </div>
