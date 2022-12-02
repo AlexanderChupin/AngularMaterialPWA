@@ -25,7 +25,7 @@
     "@angular/router": "^14.2.5",
     "@angular/service-worker": "^14.2.5",
     "@aws-amplify/cli-extensibility-helper": "^2.4.4",
-    "@aws-amplify/ui-angular": "^2.4.25",
+    "@aws-amplify/ui-angular": "^2.4.26",
     "aws-amplify": "^4.3.37",
     "caniuse-lite": "^1.0.30001431",
     "core-js": "^3.25.5",
