@@ -81,5 +81,12 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - [Angular File Upload \- Complete Guide](https://blog.angular-university.io/angular-file-upload/)
 - [What the heck is the event loop anyway? \| Philip Roberts \| JSConf EU \- YouTube](https://www.youtube.com/watch?v=8aGhZQkoFbQ&ab_channel=JSConf)
 
-тест
-
+## Implementing CyPress e2e testing as of protractor is depricated
+- [The State of end\-to\-end testing with Angular \| by Mark Thompson \(@marktechson\) \| Angular Blog](https://blog.angular.io/the-state-of-end-to-end-testing-with-angular-d175f751cb9c)
+- Rating of e2e testing frameworks [Top 5 Alternatives to Protractor \| BrowserStack](https://www.browserstack.com/guide/protractor-alternatives)
+- [How to Create Readable End\-to\-end Tests with Cypress And Cucumber](https://www.sipios.com/blog-tech/how-to-create-readable-end-to-end-tests-with-cypress-and-cucumber)
+- Working and tested cyrpess installation. [badeball/cypress\-cucumber\-preprocessor: Run cucumber/gherkin\-syntaxed specs with Cypress](https://github.com/badeball/cypress-cucumber-preprocessor)
+- Working and tested installation instructions. [cypress\-cucumber\-preprocessor/quick\-start\.md at master · badeball/cypress\-cucumber\-preprocessor](https://github.com/badeball/cypress-cucumber-preprocessor/blob/master/docs/quick-start.md)
+- Working and tested cypress configuration [cypress\-cucumber\-preprocessor/cypress\.config\.ts at master · badeball/cypress\-cucumber\-preprocessor](https://github.com/badeball/cypress-cucumber-preprocessor/blob/master/examples/webpack-ts/cypress.config.ts)  
+- cypress configuration [Configuration \| Cypress Documentation](https://docs.cypress.io/guides/references/configuration#Configuration-File)
+- [cypress\-cucumber\-preprocessor/cucumber\-basics\.md at master · badeball/cypress\-cucumber\-preprocessor](https://github.com/badeball/cypress-cucumber-preprocessor/blob/master/docs/cucumber-basics.md)
