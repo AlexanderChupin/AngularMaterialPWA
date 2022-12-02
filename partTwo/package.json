@@ -8,7 +8,8 @@
     "serve": "ng serve --configuration=development",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "e2ecypress": "npx cypress run --browser  chrome --e2e --headed"
   },
   "private": true,
   "dependencies": {
