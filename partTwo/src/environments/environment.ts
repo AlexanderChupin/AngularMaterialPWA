@@ -7,7 +7,11 @@ export const environment = {
   confirm: {
     email: '',
     password: ''
-  }
+  },
+  // [ng\-realtime\-dashboard/environment\.ts at master · lamisChebbi/ng\-realtime\-dashboard](https://github.com/lamisChebbi/ng-realtime-dashboard/blob/master/src/environments/environment.ts)
+  wsEndpoint: 'wss://alexcloud.myqnapcloud.com:8888/ws',
+  // wsEndpoint:'wss://demo.piesocket.com/v3/channel_123?api_key=VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV&notify_self',
+  reconnectInterval: 2000
 };
 
 /*

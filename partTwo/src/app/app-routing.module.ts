@@ -8,6 +8,7 @@ import { ConfirmCodeComponent } from './auth/confirm-code/confirm-code.component
 import { ProfileComponent } from './auth/profile/profile.component';
 import { AuthGuard } from './auth/auth.guard';
 import { UnauthGuard } from './auth/unauth.guard';
+import {SqlComponent} from "./sql/sql.component";
 
 const routes: Routes = [
   { path: 'auth', component: AuthComponent, children: [
@@ -32,7 +33,13 @@ const routes: Routes = [
       canActivate: [AuthGuard]
     }
   ]},
-  { path: '', component: HomeComponent, canActivate: [AuthGuard] }
+  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'manage', canActivate: [AuthGuard],children: [
+      { path: 'sql', component: SqlComponent,
+        canActivate: [AuthGuard]
+      }
+    ]
+  }
 ];
 
 @NgModule({

@@ -19,6 +19,9 @@ import { ConfirmCodeComponent } from './auth/confirm-code/confirm-code.component
 import { ProfileComponent } from './auth/profile/profile.component';
 import { LoaderComponent } from './loader/loader.component';
 import { AvatarComponent } from './auth/profile/avatar/avatar.component';
+import { SqlComponent } from './sql/sql.component';
+// [HTTP get request example in Angular using HttpClient](https://www.angularjswiki.com/httpclient/get/)
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -33,7 +36,8 @@ import { AvatarComponent } from './auth/profile/avatar/avatar.component';
     ConfirmCodeComponent,
     ProfileComponent,
     LoaderComponent,
-    AvatarComponent
+    AvatarComponent,
+    SqlComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +46,8 @@ import { AvatarComponent } from './auth/profile/avatar/avatar.component';
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    HttpClientModule
   ],
   providers: [AuthService],
   bootstrap: [AppComponent],

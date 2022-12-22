@@ -1,0 +1,50 @@
+<mat-card class="result">
+  <mat-card-content>
+    <h2 class="example-h2">Switch on SQL</h2>
+
+    <section class="example-section">
+      <mat-slide-toggle
+        class="example-margin"
+        [color]="color"
+        [(ngModel)]="checked"
+        [disabled]="disabled"
+        (toggleChange)="onTogleChange($event)">
+        Switch SQL on!
+      </mat-slide-toggle>
+      <br>
+      <p>{{sqlResponse}}</p>
+    </section>
+
+    <section class="example-section">
+      <h1>
+        Angular + WebSockets
+      </h1>
+      <br>
+      <div class="row">
+        <div class="column">
+          <textarea [(ngModel)]="content" name="contentInput" cols="40" rows="5"></textarea>
+          <br>
+          <button (click)="sendMsg()">Send Message</button>
+        </div>
+
+      </div>
+      <br>
+      <div>
+        <h1>Sent Messages</h1>
+        <br>
+        <ul>
+          <li *ngFor="let item of sent">Source: {{item.source}} -> Content {{item.content}}</li>
+        </ul>
+      </div>
+
+      <br>
+      <div>
+        <h1>Received Messages</h1>
+        <br>
+        <ul>
+          <li *ngFor="let item of received">Source: {{item.source}} -> Content {{item.content}}</li>
+        </ul>
+      </div>
+    </section>
+  </mat-card-content>
+</mat-card>

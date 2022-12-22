@@ -29,6 +29,10 @@ export class AppComponent implements OnInit {
     {
       title: "My Account (Part 2)",
       path: "/auth/signin"
+    },
+    {
+      title: "Manage SQL",
+      path: "/manage/sql"
     }
   ];
   avatar: string;

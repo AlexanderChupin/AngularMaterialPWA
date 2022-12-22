@@ -91,3 +91,15 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - cypress configuration [Configuration \| Cypress Documentation](https://docs.cypress.io/guides/references/configuration#Configuration-File)
 - [cypress\-cucumber\-preprocessor/cucumber\-basics\.md at master · badeball/cypress\-cucumber\-preprocessor](https://github.com/badeball/cypress-cucumber-preprocessor/blob/master/docs/cucumber-basics.md)
 - run all e2e test from console. `npx cypress run --browser chrome --e2e --headed`
+- testing theory mutants. [Hunt The Bugs With Mutation Testing](https://www.sipios.com/blog-tech/hunt-the-bugs-with-mutation-testing)
+
+## How to check if docker container is running remotely
+- [Docker Engine API v1\.41 Reference](https://docs.docker.com/engine/api/v1.41/#tag/Container)
+
+## Debugging websockets
+- used this article to play with cloudqueue project in 2021 [Real\-Time in Angular: A journey into Websocket and RxJS \- International JavaScript Conference](https://javascript-conference.com/blog/real-time-in-angular-a-journey-into-websocket-and-rxjs/)
+- tested good example of websocket in Angular [How to implement WebSockets in Angular Project \| indepth\.dev](https://indepth.dev/tutorials/angular/how-to-implement-websockets-in-angular-project)
+- detailed explanation websocket in Angular [Использование WebSockets в Angular c RxJs WebSocketSubject \| by Alex Dukhnovskiy \| Angular Soviet \| Medium](https://medium.com/ngx/%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-websockets-%D0%B2-angular-c-rxjs-websocketsubject-5018ecc20ee5)
+- default location of chromium profile used by PHP debugging `C:\Users\AChupin\AppData\Roaming\JetBrains\PhpStorm2020.3\chrome-user-data`. See [Chromium Docs \- User Data Directory](https://chromium.googlesource.com/chromium/src/+/main/docs/user_data_dir.md)
+- full guid for typescript debugging [Debug JavaScript in Chrome \| PhpStorm Documentation](https://www.jetbrains.com/help/phpstorm/debugging-javascript-in-chrome.html)
+- very simple example for debugging [WebSocketSubject \| Subject Variants \| RxJS Course](https://rxjs-course.dev/course/subject-variants/websocket-subject/)
