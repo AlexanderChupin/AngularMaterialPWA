@@ -19,6 +19,9 @@
       <h1>
         Angular + WebSockets
       </h1>
+      <h1>
+        WebSocket service Id {{webSocketServiceId}}
+      </h1>
       <br>
       <div class="row">
         <div class="column">
@@ -40,6 +43,13 @@
       <br>
       <div>
         <h1>Received Messages</h1>
+        <!--<ul>
+          <li *ngFor="let transaction of transactions$ | async">{{ transaction }}</li>
+        </ul>-->
+        <div>
+          {{ transactions$ | async }}
+        </div>
+        <!--<p-table [value]="transactions$ | async">-->
         <br>
         <ul>
           <li *ngFor="let item of received">Source: {{item.source}} -> Content {{item.content}}</li>

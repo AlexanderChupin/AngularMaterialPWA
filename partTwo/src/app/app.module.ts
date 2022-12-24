@@ -22,6 +22,9 @@ import { AvatarComponent } from './auth/profile/avatar/avatar.component';
 import { SqlComponent } from './sql/sql.component';
 // [HTTP get request example in Angular using HttpClient](https://www.angularjswiki.com/httpclient/get/)
 import { HttpClientModule } from '@angular/common/http';
+import {AlcwebsocketService} from "./services/alcwebsocket.service";
+import { SqlMultiComponent } from './sql-multi/sql-multi.component';
+import {InstanceIdService} from "./services/instance-id.service";
 
 @NgModule({
   declarations: [
@@ -37,7 +40,8 @@ import { HttpClientModule } from '@angular/common/http';
     ProfileComponent,
     LoaderComponent,
     AvatarComponent,
-    SqlComponent
+    SqlComponent,
+    SqlMultiComponent
   ],
   imports: [
     BrowserModule,
@@ -49,8 +53,11 @@ import { HttpClientModule } from '@angular/common/http';
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     HttpClientModule
   ],
-  providers: [AuthService],
+  providers: [AuthService, AlcwebsocketService, InstanceIdService],
   bootstrap: [AppComponent],
-  entryComponents: [ IosInstallComponent, CountryCodeSelectComponent, LoaderComponent ]
+  entryComponents: [
+    IosInstallComponent,
+    CountryCodeSelectComponent,
+    LoaderComponent ]
 })
 export class AppModule { }

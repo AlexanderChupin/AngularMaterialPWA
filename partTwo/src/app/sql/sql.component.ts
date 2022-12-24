@@ -1,13 +1,16 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {ThemePalette} from "@angular/material/core";
 import {HttpService} from "../services/http.service";
-import { AlcwebsocketService } from 'src/app/services/alcwebsocket.service';
+import { AlcwebsocketService } from '../services/alcwebsocket.service';
+import {map, catchError, tap} from "rxjs/operators";
+// import {InstanceIdService} from "../services/instance-id.service";
 
 @Component({
   selector: 'app-sql',
   templateUrl: './sql.component.html',
   styleUrls: ['./sql.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [HttpService]
 })
 export class SqlComponent implements OnInit, AfterViewInit {
   color: ThemePalette = 'accent';
@@ -19,11 +22,32 @@ export class SqlComponent implements OnInit, AfterViewInit {
   content = '';
   received = [];
   sent = [];
-  constructor(public http: HttpService, private service: AlcwebsocketService) { }
+  public webSocketServiceId: number;
+  constructor(
+    public http: HttpService,
+    private websocket_service: AlcwebsocketService
+  ) {
+  }
   @Output()
   toggleChange: EventEmitter<void>
   ngOnInit(): void {
+    let a = 1;
+    //this.websocket_service.instanceIdService=1;
+    this.webSocketServiceId = this.websocket_service.getInstanceId();
   }
+  transactions$ = this.websocket_service.messages$.pipe(
+    /*map(rows =>
+      rows['data']
+    ),*/
+    map(data =>
+      JSON.stringify(data)
+    ),
+    catchError(error => { throw error }),
+    tap({
+      error: error => console.log('[Live Table component] Error:', error),
+      complete: () => console.log('[Live Table component] Connection Closed')
+    })
+  );
 
   onTogleChange(e:Event){
     this.http.getWol().subscribe(response => {
@@ -32,21 +56,35 @@ export class SqlComponent implements OnInit, AfterViewInit {
   };
 
   ngAfterViewInit() {
-    this.service.connect();
+    let a = 2;
+    this.connect();
+/*    this.websocket_service.messages$.subscribe({
+        next: (data) => {
+          console.log("ALC. Data = " + data);
+          this.received.push(data);
+        },
+        error: (error) => {
+          console.log("ALC. Error = " + error);
+        },
+        complete: () => {
+          console.log("ALC. completed");
+        }
+      }
+    )*/
   }
   //transactions$ = this.service.messages$;
   sendMsg (){
-    this.service.sendMessage(this.content);
+    this.websocket_service.sendMessage(this.content);
   }
   connect() {
-    this.service.connect();
+    this.websocket_service.connect();
   }
 
   close() {
-    this.service.close();
+    this.websocket_service.close();
   }
 
   reconnect() {
-    this.service.connect({reconnect : true});
+    this.websocket_service.connect({reconnect : true});
   }
 }

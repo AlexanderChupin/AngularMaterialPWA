@@ -98,8 +98,17 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## Debugging websockets
 - used this article to play with cloudqueue project in 2021 [Real\-Time in Angular: A journey into Websocket and RxJS \- International JavaScript Conference](https://javascript-conference.com/blog/real-time-in-angular-a-journey-into-websocket-and-rxjs/)
+  - the corresponding github [lamisChebbi/ng\-realtime\-dashboard](https://github.com/lamisChebbi/ng-realtime-dashboard)
 - tested good example of websocket in Angular [How to implement WebSockets in Angular Project \| indepth\.dev](https://indepth.dev/tutorials/angular/how-to-implement-websockets-in-angular-project)
 - detailed explanation websocket in Angular [Использование WebSockets в Angular c RxJs WebSocketSubject \| by Alex Dukhnovskiy \| Angular Soviet \| Medium](https://medium.com/ngx/%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-websockets-%D0%B2-angular-c-rxjs-websocketsubject-5018ecc20ee5)
 - default location of chromium profile used by PHP debugging `C:\Users\AChupin\AppData\Roaming\JetBrains\PhpStorm2020.3\chrome-user-data`. See [Chromium Docs \- User Data Directory](https://chromium.googlesource.com/chromium/src/+/main/docs/user_data_dir.md)
 - full guid for typescript debugging [Debug JavaScript in Chrome \| PhpStorm Documentation](https://www.jetbrains.com/help/phpstorm/debugging-javascript-in-chrome.html)
 - very simple example for debugging [WebSocketSubject \| Subject Variants \| RxJS Course](https://rxjs-course.dev/course/subject-variants/websocket-subject/)
+- Understanding DI (dependency injection)
+    - [@Injectable\(\)](https://angular.io/guide/dependency-injection)
+    - [Angular \- Singleton services](https://angular.io/guide/singleton-services)
+    - [Angular \- Providing dependencies in modules](https://angular.io/guide/providers)
+## Introducing InstanceIdService
+- Base article, but reworked on my own manner. [angular \- Is it possible to obtain an instance Id for a service? \- Stack Overflow](https://stackoverflow.com/questions/51602094/is-it-possible-to-obtain-an-instance-id-for-a-service)
+- !!! ALC. quick introduction to the static classes. It is just a function without any instances or dependency injections [Angular: Dependency Injection vs\. Static methods](https://plainenglish.io/blog/angular-dependency-injection-vs-static-methods-2191fc08e078)
+

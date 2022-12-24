@@ -9,6 +9,7 @@ import { ProfileComponent } from './auth/profile/profile.component';
 import { AuthGuard } from './auth/auth.guard';
 import { UnauthGuard } from './auth/unauth.guard';
 import {SqlComponent} from "./sql/sql.component";
+import {SqlMultiComponent} from "./sql-multi/sql-multi.component";
 
 const routes: Routes = [
   { path: 'auth', component: AuthComponent, children: [
@@ -36,6 +37,12 @@ const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'manage', canActivate: [AuthGuard],children: [
       { path: 'sql', component: SqlComponent,
+        canActivate: [AuthGuard]
+      },
+      { path: 'sql1', component: SqlComponent,
+        canActivate: [AuthGuard]
+      },
+      { path: 'sql-multi', component: SqlMultiComponent,
         canActivate: [AuthGuard]
       }
     ]

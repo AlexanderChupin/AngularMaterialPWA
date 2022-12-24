@@ -3,7 +3,7 @@ import {
   ChangeDetectorRef,
   EventEmitter,
   Output,
-  OnInit
+  OnInit, ChangeDetectionStrategy
 } from "@angular/core";
 import { MediaMatcher } from "@angular/cdk/layout";
 import { MatSidenav } from "@angular/material/sidenav";
@@ -12,7 +12,7 @@ import { IosInstallComponent } from "./ios-install/ios-install.component";
 import { AuthService } from "./auth/auth.service";
 import Auth from "@aws-amplify/auth";
 import Storage from "@aws-amplify/storage";
-
+import { AlcwebsocketService } from './services/alcwebsocket.service';
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
@@ -33,6 +33,14 @@ export class AppComponent implements OnInit {
     {
       title: "Manage SQL",
       path: "/manage/sql"
+    },
+    {
+      title: "Manage SQL1",
+      path: "/manage/sql1"
+    },
+    {
+      title: "Manage SQL-multi",
+      path: "/manage/sql-multi"
     }
   ];
   avatar: string;
@@ -43,7 +51,7 @@ export class AppComponent implements OnInit {
     changeDetectorRef: ChangeDetectorRef,
     media: MediaMatcher,
     public auth: AuthService,
-    private toast: MatSnackBar
+    private toast: MatSnackBar,
   ) {
     this.mobileQuery = media.matchMedia("(max-width: 600px)");
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
