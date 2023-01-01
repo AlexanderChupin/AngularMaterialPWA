@@ -47,10 +47,17 @@ async function setupNodeEvents(
   return config;
 }
 
+// ALC. [Configuration \| Cypress Documentation](https://docs.cypress.io/guides/references/configuration#modifyObstructiveCode)
 export default defineConfig({
+
   e2e: {
+    env: {
+      "e2e_mail": process.env.E2E_MAIL,
+      "e2e_pass": process.env.E2E_PASS},
+    baseUrl: "http://localhost:4200",
     specPattern: "**/*.feature",
-    supportFile: false,
+    //supportFile: "./cypress/support/index.ts",
+    // supportFile: false,
     video: false,
     setupNodeEvents
   },

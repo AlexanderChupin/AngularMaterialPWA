@@ -40,6 +40,12 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
+## ALC. Running Cypress end-to-end tests
+1. Deploy development server, see above [Development server](#Development server)
+2. Set runtime node.js environment variables E2E_MAIL=****.com;E2E_PASS=****. See the description in /cypress/global.d.ts
+3. Execute Cypress GUI by `npm run cypressGUI --scripts-prepend-node-path=auto`
+   - or execute Cypress automated tests by `npm run e2ecypress --scripts-prepend-node-path=auto`
+
 ## ALC. Playing with e2e tests
 - [protractor/timeouts\.md at master · angular/protractor](https://github.com/angular/protractor/blob/master/docs/timeouts.md#waiting-for-angular-on-page-load)
 - [Protractor \- end\-to\-end testing for AngularJS](https://www.protractortest.org/#/locators)
@@ -70,7 +76,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - Go to PhpStorm account page and find fallback license [JetBrains Account](https://account.jetbrains.com/licenses)
 - [Download PhpStorm 2020\.3\.3](https://www.jetbrains.com/shop/download/PS/2020300?_ga=2.126951499.776827484.1668343899-1519556294.1618289126&_gl=1*1oi8rcu*_ga*MTUxOTU1NjI5NC4xNjE4Mjg5MTI2*_ga_9J976DJZ68*MTY2ODQyNzQ4NS45LjEuMTY2ODQyODEzNS4wLjAuMA..)
 
-## ALC. Expliring Angular life-cicle
+## ALC. Exploring Angular life-cicle
 
 - [javascript \- Does change detection in angular2 always start in root component? \- Stack Overflow](https://stackoverflow.com/questions/36489764/does-change-detection-in-angular2-always-start-in-root-component)
 - Zone.js Github repo [angular/packages/zone\.js at main · angular/angular](https://github.com/angular/angular/tree/main/packages/zone.js)  
@@ -80,21 +86,40 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - [Angular Template Syntax Demystified \- Part 1 \| Articles by thoughtram](https://blog.thoughtram.io/angular/2015/08/11/angular-2-template-syntax-demystified-part-1.html)  
 - [Angular File Upload \- Complete Guide](https://blog.angular-university.io/angular-file-upload/)
 - [What the heck is the event loop anyway? \| Philip Roberts \| JSConf EU \- YouTube](https://www.youtube.com/watch?v=8aGhZQkoFbQ&ab_channel=JSConf)
-
+- learning change detection [Angular \- NG0100: Expression has changed after it was checked](https://angular.io/errors/NG0100)
+  - sample testing app [Angular \(forked\) \- StackBlitz](https://stackblitz.com/edit/angular-q3hvsl?file=src%2Fapp%2Fapp.component.ts)
+  - explanation used in the sample testing app [Angular Debugging "Expression has changed": Explanation \(and Fix\)](https://blog.angular-university.io/angular-debugging/)
+  - !!! usefull deep explanation [Angular lifecycle hooks explained \- LogRocket Blog](https://blog.logrocket.com/angular-lifecycle-hooks/#:~:text=Lifecycle%20hooks%20are%20a%20special,updates%20them%2C%20or%20destroys%20them.)
+  - !!! usefull CD cycle diagram at the bottom [Complete Guide: Angular lifecycle hooks \- Angular inDepth](https://indepth.dev/posts/1494/complete-guide-angular-lifecycle-hooks)
+  - not tested but useful diagram for DOM redering [Simplified Angular Change Detection \| by Pankaj Parkar \| ngconf \| Medium](https://medium.com/ngconf/simplified-angular-change-detection-e74809ff804d)
 ## Implementing CyPress e2e testing as of protractor is depricated
 - [The State of end\-to\-end testing with Angular \| by Mark Thompson \(@marktechson\) \| Angular Blog](https://blog.angular.io/the-state-of-end-to-end-testing-with-angular-d175f751cb9c)
 - Rating of e2e testing frameworks [Top 5 Alternatives to Protractor \| BrowserStack](https://www.browserstack.com/guide/protractor-alternatives)
 - [How to Create Readable End\-to\-end Tests with Cypress And Cucumber](https://www.sipios.com/blog-tech/how-to-create-readable-end-to-end-tests-with-cypress-and-cucumber)
-- Working and tested cyrpess installation. [badeball/cypress\-cucumber\-preprocessor: Run cucumber/gherkin\-syntaxed specs with Cypress](https://github.com/badeball/cypress-cucumber-preprocessor)
+- Working and tested cyrpess installation. [badeball/cypress\-cucumber\-preprocessor: Run cucumber/gherkin\-syntaxed specs with Cypress](https://github.com/badeball/cypress-cucumber-preprocessor) 
 - Working and tested installation instructions. [cypress\-cucumber\-preprocessor/quick\-start\.md at master · badeball/cypress\-cucumber\-preprocessor](https://github.com/badeball/cypress-cucumber-preprocessor/blob/master/docs/quick-start.md)
 - Working and tested cypress configuration [cypress\-cucumber\-preprocessor/cypress\.config\.ts at master · badeball/cypress\-cucumber\-preprocessor](https://github.com/badeball/cypress-cucumber-preprocessor/blob/master/examples/webpack-ts/cypress.config.ts)  
 - cypress configuration [Configuration \| Cypress Documentation](https://docs.cypress.io/guides/references/configuration#Configuration-File)
 - [cypress\-cucumber\-preprocessor/cucumber\-basics\.md at master · badeball/cypress\-cucumber\-preprocessor](https://github.com/badeball/cypress-cucumber-preprocessor/blob/master/docs/cucumber-basics.md)
 - run all e2e test from console. `npx cypress run --browser chrome --e2e --headed`
 - testing theory mutants. [Hunt The Bugs With Mutation Testing](https://www.sipios.com/blog-tech/hunt-the-bugs-with-mutation-testing)
+- not tested. types library cyrpess [@types/cypress\-cucumber\-preprocessor \- npm](https://www.npmjs.com/package/@types/cypress-cucumber-preprocessor)
+- !!! cypress clear authorization data on .visit(), so need authorization again. Instead use redirect parameter when authService.SignIn called, so after the authorization the page is redirected to the target route back. 
+  - [Angular \- Router tutorial: tour of heroes](https://angular.io/guide/router-tutorial-toh#milestone-5-route-guards)
+  - [How to Get Query Parameters from URL route in Angular](https://www.angularjswiki.com/angular/get-query-parameters-in-angular/)
+  - [Query Parameters in Angular with examples](https://www.angularjswiki.com/angular/query-parameters-in-angular/)
+  - not tested. using pipe() to process authorization requests. [angular\-aws\-amplify/auth\.guard\.ts at master · daikiojm/angular\-aws\-amplify](https://github.com/daikiojm/angular-aws-amplify/blob/master/src/app/auth/auth.guard.ts)
+  - not tested. Official guide to customize authorization forms [Customization \| Amplify UI for Angular](https://ui.docs.amplify.aws/angular/connected-components/authenticator/customization)
+  - descriptoin of redirect options in Angular [Better Redirects in Angular Route Guards \| juri\.dev](https://juristr.com/blog/2018/11/better-route-guard-redirects/)
+  - ALC. interesting idea of cy.softVisit page, but did not succeed with testing [Time for a Quick\(er\) Cypress Visit in Angular \| by Netanel Basal \| Netanel Basal](https://netbasal.com/time-for-a-quick-er-cypress-visit-in-angular-d7d0faebfabc)
+  - setting the test environment [Environment Variables \| Cypress Documentation](https://docs.cypress.io/guides/guides/environment-variables#Setting)
+  - Sample app for learning cypress e2e testing, including AWS Cognito authentication [cypress\-io/cypress\-realworld\-app: A payment application to demonstrate real\-world usage of Cypress testing methods, patterns, and workflows\.](https://github.com/cypress-io/cypress-realworld-app)
+  - ALC tested. cypress custom commands [https://docs.cypress.io/api/cypress-api/custom-commands#Parent-Commands Custom Commands | Cypress Documentation]
+  - !!! Cypress best practices [Best Practices \| Cypress Documentation](https://docs.cypress.io/guides/references/best-practices#Organizing-Tests-Logging-In-Controlling-State)
 
 ## How to check if docker container is running remotely
 - [Docker Engine API v1\.41 Reference](https://docs.docker.com/engine/api/v1.41/#tag/Container)
+- top 10 processes in windows [Fetch top 10 processes utilizing high CPU as shown in task manager \- Microsoft Community Hub](https://techcommunity.microsoft.com/t5/windows-powershell/fetch-top-10-processes-utilizing-high-cpu-as-shown-in-task/m-p/1239627)
 
 ## Debugging websockets
 - used this article to play with cloudqueue project in 2021 [Real\-Time in Angular: A journey into Websocket and RxJS \- International JavaScript Conference](https://javascript-conference.com/blog/real-time-in-angular-a-journey-into-websocket-and-rxjs/)
@@ -108,7 +133,20 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
     - [@Injectable\(\)](https://angular.io/guide/dependency-injection)
     - [Angular \- Singleton services](https://angular.io/guide/singleton-services)
     - [Angular \- Providing dependencies in modules](https://angular.io/guide/providers)
+
 ## Introducing InstanceIdService
 - Base article, but reworked on my own manner. [angular \- Is it possible to obtain an instance Id for a service? \- Stack Overflow](https://stackoverflow.com/questions/51602094/is-it-possible-to-obtain-an-instance-id-for-a-service)
 - !!! ALC. quick introduction to the static classes. It is just a function without any instances or dependency injections [Angular: Dependency Injection vs\. Static methods](https://plainenglish.io/blog/angular-dependency-injection-vs-static-methods-2191fc08e078)
 
+## Learning catching Errors with RXJS
+- base article [switchMap\(\_ => fakeRequest$\.pipe\(catchError\(\_ => of\('keep on clicking\!\!\!'\)\)\)](https://www.learnrxjs.io/learn-rxjs/operators/error_handling/catch)
+- about high order observables [RxJS \- RxJS Operators](https://rxjs.dev/guide/operators#higher-order-observables)
+- !!! ALC. very useful article about high order observables [What Is a Higher\-Order Observable? \-Deborah's Developer MindScape](https://blogs.msmvps.com/deborahk/higher-order-observable/)  
+- alternative to guzzle [RxJS \- ajax](https://rxjs.dev/api/ajax/ajax)
+- !!! ALC. Very good explanation of keeping high order observables alive after an error [How to keep an Observable alive after Error in Angular? \| by Vikash Singh \| Medium](https://medium.com/@erVikas1/how-to-keep-an-observable-returned-by-httpclient-alive-after-error-da6c5e601e9c)
+- ALC. Very useful article on how to unsubscribe from subscriptions [6 Ways to Unsubscribe from Observables in Angular \| by Chidume Nnamdi 🔥💻🎵🎮 \| Bits and Pieces](https://blog.bitsrc.io/6-ways-to-unsubscribe-from-observables-in-angular-ab912819a78f)
+
+## ALC. Playing with 404 page not found
+- press any key... [keypress \- execute function on any key press angular \- Stack Overflow](https://stackoverflow.com/questions/54876160/execute-function-on-any-key-press-angular)
+- ALC. selected template for the page design [\#8 Bluescreen \- 404 Page](https://dev.to/webdeasy/25-creative-404-error-pages-with-cool-animations-16jn)
+- forwarding unknown routes to the 404 page. [Angular \- Common Routing Tasks](https://angular.io/guide/router#setting-up-wildcard-routes)

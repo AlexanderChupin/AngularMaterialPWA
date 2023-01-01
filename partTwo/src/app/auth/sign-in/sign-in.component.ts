@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { CognitoUser } from '@aws-amplify/auth';
 import { NotificationService } from 'src/app/services/notification.service';
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { LoaderService } from 'src/app/loader/loader.service';
 
@@ -12,7 +12,7 @@ import { LoaderService } from 'src/app/loader/loader.service';
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss']
 })
-export class SignInComponent {
+export class SignInComponent implements OnInit {
 
   signinForm: FormGroup = new FormGroup({
     email: new FormControl('',[ Validators.email, Validators.required ]),
@@ -24,11 +24,25 @@ export class SignInComponent {
   get emailInput() { return this.signinForm.get('email'); }
   get passwordInput() { return this.signinForm.get('password'); }
 
-  constructor(
+  constructor (
     public auth: AuthService,
     private _notification: NotificationService,
     private _router: Router,
-    private _loader: LoaderService ) { }
+    private _route: ActivatedRoute,
+    private _loader: LoaderService )  { }
+    redirect: string = '';
+
+  ngOnInit (): void {
+    let a=1;
+    this._route.queryParams
+      .subscribe(params => {
+          console.log(params); // { orderby: "price" }
+          // this.orderby = params.orderby;
+          // console.log(this.orderby); // price
+          this.redirect=params.redirect ?? '';
+        }
+      );
+  }
 
   getEmailInputError() {
     if (this.emailInput.hasError('email')) {
@@ -50,7 +64,7 @@ export class SignInComponent {
     this.auth.signIn(this.emailInput.value, this.passwordInput.value)
       .then((user: CognitoUser|any) => {
         this._loader.hide();
-        this._router.navigate(['']);
+        this._router.navigate([this.redirect]);
       })
       .catch((error: any) => {
         this._loader.hide();

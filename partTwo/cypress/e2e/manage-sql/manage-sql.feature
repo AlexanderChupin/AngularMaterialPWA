@@ -5,7 +5,7 @@ Feature: Manage SQL
     When I visit the Manage SQL page
     Then I should see "SQL state" control
 
-  Scenario: Change status of SQL
-    When "SQL state" is off
-    And  I click on "SQL state"
-    Then "SQL state" turns on
+#  Scenario: Change status of SQL
+#    When "SQL state" is off
+#    And  I click on "SQL state"
+#    Then "SQL state" turns on

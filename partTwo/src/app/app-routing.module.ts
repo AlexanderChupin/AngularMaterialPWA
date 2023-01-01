@@ -10,6 +10,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { UnauthGuard } from './auth/unauth.guard';
 import {SqlComponent} from "./sql/sql.component";
 import {SqlMultiComponent} from "./sql-multi/sql-multi.component";
+import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
 
 const routes: Routes = [
   { path: 'auth', component: AuthComponent, children: [
@@ -46,7 +47,9 @@ const routes: Routes = [
         canActivate: [AuthGuard]
       }
     ]
-  }
+  },
+  //ALC. https://angular.io/guide/router#setting-up-wildcard-routes
+  { path: '**', component: PageNotFoundComponent  }
 ];
 
 @NgModule({

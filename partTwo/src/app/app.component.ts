@@ -13,6 +13,7 @@ import { AuthService } from "./auth/auth.service";
 import Auth from "@aws-amplify/auth";
 import Storage from "@aws-amplify/storage";
 import { AlcwebsocketService } from './services/alcwebsocket.service';
+import { LoggerService as Logger } from './services/logger.service';
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
@@ -41,6 +42,10 @@ export class AppComponent implements OnInit {
     {
       title: "Manage SQL-multi",
       path: "/manage/sql-multi"
+    },
+    {
+      title: "Page 404",
+      path: "/manage/404404"
     }
   ];
   avatar: string;

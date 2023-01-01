@@ -8,6 +8,8 @@ import {MatBottomSheetRef} from "@angular/material/bottom-sheet";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MaterialModule} from "../../material/material.module";
+import {ActivatedRoute} from "@angular/router";
+import {of, Subject} from "rxjs";
 
 describe('SignInComponent', () => {
   let component: SignInComponent;
@@ -35,7 +37,12 @@ describe('SignInComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SignInComponent ],
-      providers: [{ provide: NotificationService, useValue: NotificationServiceStub}, {provide: LoaderService, useValue: LoaderServiceStub}, {provide: MatBottomSheetRef, useValue: MatBottomSheetRefStub}],
+      providers: [
+        {provide: NotificationService, useValue: NotificationServiceStub},
+        {provide: LoaderService, useValue: LoaderServiceStub},
+        {provide: MatBottomSheetRef, useValue: MatBottomSheetRefStub},
+        {provide: ActivatedRoute, useValue: {queryParams:of('test')}}
+        ],
       //ERROR: 'NG0304: 'mat-form-field' is not a known element (used in the 'SignInComponent' component template):
       // 1. If 'mat-form-field' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
       // 2. If 'mat-form-field' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'

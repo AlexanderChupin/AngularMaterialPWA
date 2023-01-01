@@ -25,6 +25,9 @@ import { HttpClientModule } from '@angular/common/http';
 import {AlcwebsocketService} from "./services/alcwebsocket.service";
 import { SqlMultiComponent } from './sql-multi/sql-multi.component';
 import {InstanceIdService} from "./services/instance-id.service";
+import {AlcRxjsToolsService} from './services/alc-rxjs-tools.service'
+import {LoggerService} from './services/logger.service';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component'
 
 @NgModule({
   declarations: [
@@ -41,7 +44,8 @@ import {InstanceIdService} from "./services/instance-id.service";
     LoaderComponent,
     AvatarComponent,
     SqlComponent,
-    SqlMultiComponent
+    SqlMultiComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +57,7 @@ import {InstanceIdService} from "./services/instance-id.service";
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     HttpClientModule
   ],
-  providers: [AuthService, AlcwebsocketService, InstanceIdService],
+  providers: [AuthService, AlcwebsocketService, InstanceIdService, AlcRxjsToolsService, LoggerService],
   bootstrap: [AppComponent],
   entryComponents: [
     IosInstallComponent,
