@@ -29,9 +29,9 @@ describe('ProfileComponent', () => {
   };
 
   // NullInjectorError: R3InjectorError(DynamicTestModule)[LoaderService -> MatDialog -> MatDialog]: NullInjectorError: No provider for MatDialog!
-  let LoaderServiceStub: Partial<LoaderService> = {
+  /*let LoaderServiceStub: Partial<LoaderService> = {
     show(message: string = "Please wait..."): void {}
-  };
+  };*/
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,7 +42,7 @@ describe('ProfileComponent', () => {
       // NullInjectorError: R3InjectorError(DynamicTestModule)[NotificationService -> MatSnackBar -> MatSnackBar]:NullInjectorError: No provider for MatSnackBar!
       // NullInjectorError: R3InjectorError(DynamicTestModule)[LoaderService -> MatDialog -> MatDialog]: NullInjectorError: No provider for MatDialog!
       // NullInjectorError: R3InjectorError(DynamicTestModule)[LoaderService -> MatDialog -> Overlay -> Overlay]: NullInjectorError: No provider for Overlay!
-      providers: [MatSnackBar,{ provide: NotificationService, useValue: NotificationServiceStub }, { provide: LoaderService, useValue: LoaderServiceStub }/*,MatDialog, Overlay*/],
+      providers: [MatSnackBar,{ provide: NotificationService, useValue: NotificationServiceStub }, LoaderService/*{ provide: LoaderService, useValue: LoaderServiceStub }*//*,MatDialog, Overlay*/],
       // ERROR: 'NG0304: 'mat-form-field' is not a known element (used in the 'ProfileComponent' component template):
       // 1. If 'mat-form-field' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
       // 2. If 'mat-form-field' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'

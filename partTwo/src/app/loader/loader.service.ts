@@ -27,4 +27,12 @@ export class LoaderService {
       this.loading = false;
     }
   }
+
+  /**
+  * ALC. return message currently displayed by the dialog
+  */
+  getMessage(): string {
+    return this.loading?this.dialogRef.componentInstance.message:'';
+  }
+
 }

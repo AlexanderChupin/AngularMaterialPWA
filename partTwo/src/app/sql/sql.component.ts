@@ -20,7 +20,7 @@ import {
   switchMap,
   mergeAll,
   takeUntil,
-  startWith, filter
+  startWith, filter, delay
 } from "rxjs/operators";
 import {AlcRxjsToolsService, intAttempts_gateway, intRetries_gateway, msecDelay_gateway} from "../services/alc-rxjs-tools.service";
 import {
@@ -39,6 +39,7 @@ import {
 // import {InstanceIdService} from "../services/instance-id.service";
 import {LoggerService as Logger} from '../services/logger.service'
 import {pipeline} from "stream";
+import {LoaderService} from "../loader/loader.service";
 @Component({
   selector: 'app-sql',
   templateUrl: './sql.component.html',
@@ -63,13 +64,14 @@ export class SqlComponent implements OnInit, AfterViewInit {
   received = [];
   sent = [];
   public webSocketServiceId: number;
-  arrRequests: Array<Observable<any>> = [];
   gwText$: BehaviorSubject<string> = new BehaviorSubject('ALC. retry connection');
   // @Input() gwText$: string = 'ALC. retry connection';
+  private static _spinnerTimeout: number = 700; //ALC. Spinner minimum timeout to make it visible to human
   constructor(
     public httpService: HttpService,
-    private websocket_service: AlcwebsocketService,
-    private alcRxjsToolsService: AlcRxjsToolsService
+    private _websocket_service: AlcwebsocketService,
+    private alcRxjsToolsService: AlcRxjsToolsService,
+    private _loader: LoaderService
   ) {
     // this.httpService.urlWol=gwEndpoint;
   }
@@ -82,12 +84,12 @@ export class SqlComponent implements OnInit, AfterViewInit {
   toggleChange: EventEmitter<void>
   ngOnInit(): void {
     let a = 1;
-    //this.websocket_service.instanceIdService=1;
-    this.webSocketServiceId = this.websocket_service.getInstanceId();
+    //this._websocket_service.instanceIdService=1;
+    this.webSocketServiceId = this._websocket_service.getInstanceId();
     // this.getRetriesRXJS();
     // this.turnGwOff ();
   }
-  transactions$ = this.websocket_service.messages$.pipe(
+  transactions$ = this._websocket_service.messages$.pipe(
     /*map(rows =>
       rows['data']
     ),*/
@@ -105,21 +107,27 @@ export class SqlComponent implements OnInit, AfterViewInit {
     next:(response:any) => {
       Logger.log(`ALC response`, response);
       if (response.response) {
-        this.gwText$.next(response.response.toString())
+        this.gwText$.next(this._loader.getMessage() +" " + response.response.toString())
         if (response.response.toString().match(/.+Success.+/)){
           // sabsGW.unsubscribe(); not required if below notifierGW used.
           this.notifierGW.next(null);
           this.turnGwOn();
         }
       }
+      setTimeout(()=>this._loader.hide(),SqlComponent._spinnerTimeout) // ALC.hide loading spinner
     },
     error:
       (e) => {
-        Logger.warn(`ALC. error`, e)
+        Logger.warn(`ALC. `, e);
+        this.gwText$.next(this._loader.getMessage() + e);
+        this.turnGwOff();
+        setTimeout(()=>this._loader.hide(),SqlComponent._spinnerTimeout) // ALC.hide loading spinner
       },
     complete:
       () => {
-        Logger.log(`getRetriesRXJS done`);
+        Logger.log(`retriesGW done`);
+        this.gwText$.next(this._loader.getMessage() + " complete success");
+        setTimeout(()=>this._loader.hide(),SqlComponent._spinnerTimeout) // ALC.hide loading spinner
       }
   }
   onTogleGwOn(e:Event){
@@ -135,18 +143,18 @@ export class SqlComponent implements OnInit, AfterViewInit {
 
   //transactions$ = this.service.messages$;
   sendMsg (){
-    this.websocket_service.sendMessage(this.content);
+    this._websocket_service.sendMessage(this.content);
   }
   connect() {
-    this.websocket_service.connect();
+    this._websocket_service.connect();
   }
 
   close() {
-    this.websocket_service.close();
+    this._websocket_service.close();
   }
 
   reconnect() {
-    this.websocket_service.connect({reconnect : true});
+    this._websocket_service.connect({reconnect : true});
   }
 
   // ALC. [RxJS \- retry](https://rxjs.dev/api/operators/retry)
@@ -155,7 +163,9 @@ export class SqlComponent implements OnInit, AfterViewInit {
     takeUntil(this.notifier),
     takeUntil(this.notifierGW),
     concatMap((v) => {
-        Logger.log(`ALC. attempt = ${v}`);
+        let message = `ALC. attempt = ${v}`;
+        Logger.log(message);
+        this._loader.show(message);
         // this.arrRequests.push(this.httpService.getWol(v));
         return this.httpService.getWol(v).pipe(
           /*tap({
@@ -180,18 +190,6 @@ export class SqlComponent implements OnInit, AfterViewInit {
         //return EMPTY;
       })*/
   );
-
-
-  GWCheckedOp<T>(source: Observable<any>) {
-    return source.pipe(
-      filter(v => v && v.response && v.response.toString().match(/.+Success.+/))
-      ,map(v=>v?true:false)
-      ,tap(v=>{
-        let a =1;
-      })
-    );
-  }
-  obslChecked: Observable<any>;
 
   turnGwOn () {
     this.checked = true;

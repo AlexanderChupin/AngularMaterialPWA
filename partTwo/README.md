@@ -31,6 +31,8 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- ALC. custom configuration for Karma [karma\-runner/karma\-chrome\-launcher: A Karma plugin\. Launcher for Chrome and Chrome Canary\.](https://github.com/karma-runner/karma-chrome-launcher#configuration)
+- ALC. set custom [How to Disable Software Reporter Tool in Chrome Causing High CPU Usage](https://www.makeuseof.com/disable-chrome-software-reporter-tool/)
 
 ## Running end-to-end tests
 

@@ -27,9 +27,9 @@ describe('SignInComponent', () => {
   };
 
   // NullInjectorError: R3InjectorError(DynamicTestModule)[LoaderService -> MatDialog -> MatDialog]: NullInjectorError: No provider for MatDialog!
-  let LoaderServiceStub: Partial<LoaderService> = {
+  /*let LoaderServiceStub: Partial<LoaderService> = {
     show(message: string = "Please wait..."): void {}
-  };
+  };*/
 
   // javascript - NullInjectorError: No provider for MatBottomSheetRef - Stack Overflow https://stackoverflow.com/questions/57846500/nullinjectorerror-no-provider-for-matbottomsheetref
   let MatBottomSheetRefStub:Partial<MatBottomSheetRef> = {};
@@ -39,7 +39,8 @@ describe('SignInComponent', () => {
       declarations: [ SignInComponent ],
       providers: [
         {provide: NotificationService, useValue: NotificationServiceStub},
-        {provide: LoaderService, useValue: LoaderServiceStub},
+        /*{provide: LoaderService, useValue: LoaderServiceStub},*/
+        LoaderService,
         {provide: MatBottomSheetRef, useValue: MatBottomSheetRefStub},
         {provide: ActivatedRoute, useValue: {queryParams:of('test')}}
         ],

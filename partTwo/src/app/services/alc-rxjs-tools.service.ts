@@ -25,7 +25,7 @@ export class AlcRxjsToolsService {
   public getObsRetries = (msecDelay: number, intAttempts: number, intRetries: number, ): Observable<any> => {
     const source: Observable<any> = interval(msecDelay);
     return source.pipe(
-      mergeMap(val => val > intAttempts -1 ? throwError(() => 'Error!') : of(val)),
+      mergeMap(val => val > intAttempts -1 ? throwError(() => 'Error! All retries are used. Try again') : of(val)),
       retry(intRetries-1) // retry 2 times on error
     );
   }

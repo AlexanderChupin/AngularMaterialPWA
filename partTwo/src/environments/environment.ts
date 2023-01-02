@@ -14,7 +14,7 @@ export const environment = {
   reconnectInterval: 2000,
   // ALC. retries to connect to the gateway (alexnas)
   gwEndpoint: 'https://alexcloud.myqnapcloud.com:8081/alcwol.php',
-  msecDelay_gateway: 5000,
+  msecDelay_gateway: 2000,
   intAttempts_gateway: 3,
   intRetries_gateway: 2,
   //ALC. https://stackblitz.com/edit/angular-logger-service

@@ -23,3 +23,6 @@ part*/src/aws-exports.js
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# karma testing
+/partTwo/.chrome
