@@ -40,6 +40,7 @@ import {
 import {LoggerService as Logger} from '../services/logger.service'
 import {pipeline} from "stream";
 import {LoaderService} from "../loader/loader.service";
+import {isNumber} from "util";
 @Component({
   selector: 'app-sql',
   templateUrl: './sql.component.html',
@@ -88,6 +89,7 @@ export class SqlComponent implements OnInit, AfterViewInit {
     this.webSocketServiceId = this._websocket_service.getInstanceId();
     // this.getRetriesRXJS();
     // this.turnGwOff ();
+    // this.systemMsg$.subscribe(this.obsrSystem) ;
   }
   transactions$ = this._websocket_service.messages$.pipe(
     /*map(rows =>
@@ -98,10 +100,34 @@ export class SqlComponent implements OnInit, AfterViewInit {
     ),
     catchError(error => { throw error }),
     tap({
-      error: error => Logger.warn('[Live Table component] Error:', error),
-      complete: () => Logger.log('[Live Table component] Connection Closed')
+      error: error => Logger.warn('[SQL component] Error:', error),
+      complete: () => Logger.log('[SQL component] Connection Closed')
     })
   );
+
+  systemMsg$ = this._websocket_service.messages$.pipe(
+    tap({
+      next:v=>{
+        let a=1;
+      },
+      error:e=>{
+        let a=1;
+      },
+      complete:()=>{
+        let a=1;
+      }
+    })/*,
+    filter((v:any,i:number) => {
+      (typeof ({'system'} = v) === 'number')})*/
+  )
+  /**
+   * ALC. Observer to get system messages
+   */
+  obsrSystem = {
+    next: v=>{
+      Logger.log('ALC system message', v)
+    }
+  }
   //ALC observer to react on GW requests
   obsrGW: Observer<any> = {
     next:(response:any) => {
