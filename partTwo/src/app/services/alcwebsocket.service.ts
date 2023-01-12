@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import { environment } from '../../environments/environment';
 import {
@@ -14,7 +14,7 @@ import {
   range,
   take,
   pipe,
-  OperatorFunction
+  OperatorFunction, share, fromEvent, race, merge, Observer, Subscription
 } from 'rxjs';
 import {
   retryWhen,
@@ -32,9 +32,6 @@ import {InstanceIdService} from "./instance-id.service";
 import {LoggerService as Logger} from "./logger.service";
 import {
   AlcRxjsToolsService,
-  intAttempts_gateway,
-  intRetries_gateway,
-  msecDelay_gateway
 } from "./alc-rxjs-tools.service";
 // [ng\-realtime\-dashboard/environment\.ts at master · lamisChebbi/ng\-realtime\-dashboard](https://github.com/lamisChebbi/ng-realtime-dashboard/blob/master/src/environments/environment.ts)
 export {LoggerService} from '../services/logger.service'
@@ -44,24 +41,31 @@ export const RECONNECT_INTERVAL = environment.reconnectInterval;
 @Injectable({
   providedIn: 'root'
 })
-export class AlcwebsocketService {
+export class AlcwebsocketService implements OnDestroy {
+  //ToDo add tslint rule for unsubscribe from all subscriptions
+  notifierUnsubscribeAll: Subject<null> = new Subject(); //common notifier to unsubscribe from all subscriptions
   private socket$: WebSocketSubject<any>;
+  // ALC. direct socket$ processor with connection retry logic
+  private _messages: Observable<any>;
   private messagesSubject$ = new Subject();
+  // ALC. observable to emit content messages to content subscribers
   public messages$ = this.messagesSubject$.pipe(switchAll(), catchError(e => {
     throw e
   }));
   private _alcInstId: number;
-  private _status: string;
-  private reconnection$: Observable<number> = range(1, intRetries_gateway*intAttempts_gateway).
-  pipe(
-    //takeWhile((v, index) => index < intRetries_gateway*intAttempts_gateway && !this.socket$),
-    concatMap((v,i)=>of(v).pipe(
-      delayWhen((v)=>this._reconnectDelay$.pipe(delay(v*msecDelay_gateway)))),
-    ), //msecDelay_gateway
-  );
+  //ALC. connection state. Only for debugging purpose
+  private _state: string;
+  //ALC. manual push from Angular button.
+  private _clicks = new Subject();
 
+  /**
+   * ALC. initiates single reconnect attempt
+   * @private
+   */
+  private _reconnectCounter$: Subject<any> = new Subject<any>();
+  // ALC. subscription to _reconnectCounter
+  private _subsReconnectCounter: Subscription;
 
-  private _reconnectDelay$: Subject<any> = new Subject<any>();
   constructor(
     private instanceIdService: InstanceIdService,
     private alcRxjsToolsService: AlcRxjsToolsService) {
@@ -69,77 +73,95 @@ export class AlcwebsocketService {
   }
 
   /**
-   * Creates a new WebSocket subject and send it to the messages subject
-   * @param cfg if true the observable will be retried.
+   * ALC. tap() to debug _reconnectCounter
+   * @private
+   * @debugObsle string name of observable to display in the log
    */
-  public connect(cfg: { reconnect: boolean } = { reconnect: false }): void {
-    if (!this.socket$ || this.socket$.closed) {
-      this.socket$ = this.getNewWebSocket();
-
-    // ToDo: introduce delay and max number of attempts between consecutive retries using timer() observable
-    const messages = this.socket$.pipe(
-      tap({
-        next: v => {
-          Logger.log('ALC.socket$ next', v)},
-        error: error => {
-          let eStr = JSON.stringify(error);
-          Logger.warn('ALC.socket$ error', error)},
-        complete: () => {
-          Logger.log('ALC.socket$ complete')},
-      }),
-      /*cfg.reconnect ? */this.reconnect() /*: o => o*/,
-      catchError(_ =>
-          EMPTY
-        //throwError('ALC. messages error')
-      ))
-    //toDO only next an observable if a new subscription was made double-check this
-    this.messagesSubject$.next(messages);
-    }
-  }
-  private _subsReconnection = this.reconnection$.
-  subscribe({
-    next:(v)=>this.connect({ reconnect: true }),
-    error:()=>{
-      this._status = 'retry_failed';
+  private _debugObserver = (debugObsle: string): Observer<any> => {return {
+    next:(v)=>Logger.log(`[alcwebsocket.service] ${debugObsle} next = `,v), //this.connect({ reconnect: true })
+    error:(err)=>{
+      Logger.warn(`[alcwebsocket.service] ${debugObsle} error = `,err)
     },
     complete:()=>{
-      this._status = 'retry_completed';
+      Logger.warn(`[alcwebsocket.service] ${debugObsle} complete`);
     }
-  });
+  }};
+
+  // ALC. emit new reconnection cycle by ping-pong timeout or manual push
+  /*private _obsReconnectNewCycle: Observable<null> = merge(
+    /!*interval(50000),*!/
+    this._clicks)
+    .pipe(
+      takeUntil(this.notifierUnsubscribeAll),
+      tap(this._debugObserver('_obsReconnectNewCycle/source'))
+    );*/
+  private _obsReconnectNewCycle = this._clicks.pipe(tap(this._debugObserver('_obsReconnectNewCycle/source')));
+
   /**
-   * Retry a given observable by a time span
-   * @param observable the observable to be retried
+   * controlling reconnect attempts
+   * emitting flag(counter number) to start websocket connection immediately.
+   * next counter is ignited by _reconnectCounter$ and delayed by {number * environment.msecDelay_websocket} (msec)
+   * the counter is reset by _obsReconnectNewCycle (the combination of ping_pong_websocket_timeout or manual button click)
    */
-  private reconnect() : OperatorFunction<any, any>{
-    return pipe(
-      retryWhen(errors => errors.pipe(
-        tap({
-          next:val => console.log('[Data Service] Try to reconnect', val),
-          error: (err) =>{
-            let a=1
-          },
-          complete: ()=>{
-            let a=1;
-          }}
+  private _reconnectCounter: Observable<number> = range(0, environment.intRetries_websocket*environment.intAttempts_websocket-1).
+  pipe(
+    takeUntil(this.notifierUnsubscribeAll),
+    // ALC. delay the single reconnect attempt
+    concatMap((v,i)=>of(v).pipe(
+      delayWhen((v)=>this._reconnectCounter$.pipe(
+        delay(v*environment.msecDelay_websocket),
         ),
-        delayWhen(_ => timer(5000)))));
+      )),
+    ),
+    tap(this._debugObserver('_reconnectCounter')),
+  );
+
+  /**
+   * ALC. Unsubscribe from reconnect counter (needed to reset the counter) and subscribe back (restarting the counter)
+   */
+  private _resetReconnectConfig = (): void =>{
+    this._subsReconnectCounter ? this._subsReconnectCounter.unsubscribe() : null;
+    this._subsReconnectCounter = this._reconnectCounter.subscribe({
+      // ALC. try to connect on counter
+      next:v=>this.connect()/*,
+      //ALC. wait until NewCycle observable
+      complete:()=>this._obsReconnectNewCycle.pipe(take(1)).subscribe(()=>this.connect({reconnect:true}))*/
+    })
   }
-  /*private reconnect(observable: Observable<any>): Observable<any> {
-    return observable.pipe(
-      //delay(RECONNECT_INTERVAL+3000),
-      retry({
-        count:3,
-        delay: (errors,counter) =>
-          /!*errors.pipe(
-            tap(
-              val => Logger.log('[Data Service] Try to reconnect', val)),
-            catchError(err => of(1)), //throwError(()=> new Error('ALC. [DataService] error notifier for reconnect'))
-            delayWhen(v => timer(RECONNECT_INTERVAL + 3000))
-          )*!/
-          timer(RECONNECT_INTERVAL+3000)
-      })
-    );
-  }*/
+  /**
+   * Creates a new WebSocket subject(once during init), connects to server (by sending it to the messages subject)
+   * @param cfg {reconnect:true} to subscribe to new reconnect cycle and connect to server
+   */
+  public connect(cfg: { reconnect: boolean } = { reconnect: false }): void {
+    //ALC. create new socket$ only once during service init. Retry logic is implemented in next blocks.
+    if (!this.socket$ || this.socket$.closed || !this._messages) {
+      this.socket$ = this.getNewWebSocket();
+
+      // ToDo: introduce delay and max number of attempts between consecutive retries using timer() observable
+      this._messages = this.socket$.pipe(
+        takeUntil(this.notifierUnsubscribeAll),
+        tap(this._debugObserver('socket$')),
+        /*cfg.reconnect ? this.reconnect() : o => o,*/
+        //retry({delay:2000}),
+        catchError(_ =>
+          EMPTY
+        ))
+      this._state = 'websocket_created'
+      //ALC. always wait for new reconnection cycle
+      this._obsReconnectNewCycle.subscribe(()=>this.connect({reconnect:true}))
+      this.connect({reconnect:true});
+    return;
+    }
+
+    // ALC. subscribe to reconnect on ping-pong interval or manual push
+    if (cfg.reconnect){
+      this._resetReconnectConfig();
+      this._reconnectCounter$.next(null);
+      return;
+    }
+    //toDO only next an observable if a new subscription was made double-check this
+    this.messagesSubject$.next(this._messages);
+  }
 
   close() {
     this.socket$.complete();
@@ -163,37 +185,29 @@ export class AlcwebsocketService {
       url: WS_ENDPOINT,
       openObserver: {
         next: () => {
-          Logger.log('[DataService]: connection ok');
-          this._status = 'connected';
+          this._state = 'connected';
+          Logger.log('[alcwebsocket.service]: _state = ',this._state);
+          this._resetReconnectConfig();
         }
       },
       closeObserver: {
         next: (e: CloseEvent) => {
-          Logger.warn('[DataService]: connection closed = ', e);
-          // this.socket$.complete(); // ALC. makes no sense because all observers are already disconnected at this moment
-          // this.socket$ = undefined;
-          // Создаем interval со значением из reconnectInterval
-          // this.reconnection$ =
-          //   interval(msecDelay_gateway)
-          //     .pipe(takeWhile((v, index) => index < intRetries_gateway*intAttempts_gateway && !this.socket$));
-          // setTimeout(()=>this.connect({ reconnect: true }),RECONNECT_INTERVAL+3000);
-          /*let obslRetryWS = this.alcRxjsToolsService.getObsRetries(msecDelay_gateway,intAttempts_gateway,intRetries_gateway)
-            .pipe(
-              takeUntil(timer(30000)),
-              catchError(err=>
-                EMPTY
-              )
-            );
-          obslRetryWS.subscribe(()=>this.connect({ reconnect: true }))*/
-          // timer(2000).subscribe(()=>this.connect({ reconnect: true }));
-
-          // this._status==='retrying'?this._reconnectDelay$.next(1):null;
-          // this._reconnectDelay$.next(1);
-          // timer(3000).subscribe(()=>this.connect({ reconnect: true }))
-          this.connect({ reconnect: true })
+          Logger.warn('[alcwebsocket.service] connection closed = ', e);
+          this._state = 'disconnected';
+          (e.code == 1000 )?null:this._reconnectCounter$.next(null);
         }
       }
     });
   }
 
+  ngOnDestroy() {
+    this.close();
+    this.notifierUnsubscribeAll.next(null);
+    this.notifierUnsubscribeAll.complete();
+    Logger.log('[alcwebsocket.service] is destroyed');
+  }
+
+  onRecycle() {
+    this._clicks.next(0);
+  }
 }

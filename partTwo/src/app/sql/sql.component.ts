@@ -52,7 +52,7 @@ import {isNumber} from "util";
 export class SqlComponent implements OnInit, AfterViewInit {
   // ALC. Very useful article on how to unsubscribe from subscriptions [6 Ways to Unsubscribe from Observables in Angular \| by Chidume Nnamdi 🔥💻🎵🎮 \| Bits and Pieces](https://blog.bitsrc.io/6-ways-to-unsubscribe-from-observables-in-angular-ab912819a78f)
   //ToDo add tslint rule for unsubscribe from all subsriptions
-  notifier: Subject<null> = new Subject(); //common notifier to unsubscribe from all subscriptions
+  notifierUnsubscribeAll: Subject<null> = new Subject(); //common notifier to unsubscribe from all subscriptions
   notifierGW: Subject<null> = new Subject(); // specific notifier to complete GW Observable.
   matTooltipGW:string = "Switch GW On"
   color: ThemePalette = 'accent';
@@ -183,10 +183,18 @@ export class SqlComponent implements OnInit, AfterViewInit {
     this._websocket_service.connect({reconnect : true});
   }
 
+  onConnect(e){
+    this.connect();
+  }
+
+  onRecycle(e){
+    this._websocket_service.onRecycle();
+  }
+
   // ALC. [RxJS \- retry](https://rxjs.dev/api/operators/retry)
   retriesGW: Observable<any> = this.alcRxjsToolsService.getObsRetries(msecDelay_gateway,intAttempts_gateway,intRetries_gateway).
   pipe(
-    takeUntil(this.notifier),
+    takeUntil(this.notifierUnsubscribeAll),
     takeUntil(this.notifierGW),
     concatMap((v) => {
         let message = `ALC. attempt = ${v}`;
@@ -229,7 +237,7 @@ export class SqlComponent implements OnInit, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.notifier.next(null);
-    this.notifier.complete();
+    this.notifierUnsubscribeAll.next(null);
+    this.notifierUnsubscribeAll.complete();
   }
 }
