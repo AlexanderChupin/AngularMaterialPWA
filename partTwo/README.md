@@ -147,6 +147,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - alternative to guzzle [RxJS \- ajax](https://rxjs.dev/api/ajax/ajax)
 - !!! ALC. Very good explanation of keeping high order observables alive after an error [How to keep an Observable alive after Error in Angular? \| by Vikash Singh \| Medium](https://medium.com/@erVikas1/how-to-keep-an-observable-returned-by-httpclient-alive-after-error-da6c5e601e9c)
 - ALC. Very useful article on how to unsubscribe from subscriptions [6 Ways to Unsubscribe from Observables in Angular \| by Chidume Nnamdi 🔥💻🎵🎮 \| Bits and Pieces](https://blog.bitsrc.io/6-ways-to-unsubscribe-from-observables-in-angular-ab912819a78f)
+- ALC. RXJS docs with animations [⦵ fromEvent \- RxJS Tutorial](https://rxjstutorial.com/docs/creation-operators/fromEvent/)
 
 ## ALC. Playing with 404 page not found
 - press any key... [keypress \- execute function on any key press angular \- Stack Overflow](https://stackoverflow.com/questions/54876160/execute-function-on-any-key-press-angular)

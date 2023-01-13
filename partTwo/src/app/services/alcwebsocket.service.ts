@@ -164,7 +164,7 @@ export class AlcwebsocketService implements OnDestroy {
   }
 
   close() {
-    this.socket$.complete();
+    this.socket$ ? this.socket$.complete() : null;
     this.socket$ = undefined;
   }
 
