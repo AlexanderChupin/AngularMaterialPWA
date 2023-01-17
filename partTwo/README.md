@@ -63,6 +63,10 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - [How to import Angular Material in project? \- Stack Overflow](https://stackoverflow.com/questions/45166844/how-to-import-angular-material-in-project)
 - [Angular \- RouterTestingModule](https://angular.io/api/router/testing/RouterTestingModule)
 - using of createSpyObj [Angular \- Testing services](https://angular.io/guide/testing-services)
+- !!! Angular unit testing of observables. asynchronous RxJS code synchronously [RxJS \- Testing RxJS Code with Marble Diagrams](https://rxjs.dev/guide/testing/marble-testing)
+  - testing observables explained. [How to test Observables\. The ultimate guide — never again be… \| by Kevin Kreuzer \| Angular In Depth \| Medium](https://medium.com/angular-in-depth/how-to-test-observables-a00038c7faad)
+  - !!! using of marbleAssert to visualize actual vs expected marbles [kwonoj/rx\-sandbox: Marble diagram DSL based test suite for RxJS](https://github.com/kwonoj/rx-sandbox#anatomy-of-test-interface)  
+  - testing HTTP services [Angular \- Testing services](https://angular.io/guide/testing-services#testing-http-services)
 
 ## ALC. Debugging Angular application
 - [Angular \| IntelliJ IDEA](https://www.jetbrains.com/help/idea/angular.html#angular_running_and_debugging)
@@ -119,6 +123,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
   - Sample app for learning cypress e2e testing, including AWS Cognito authentication [cypress\-io/cypress\-realworld\-app: A payment application to demonstrate real\-world usage of Cypress testing methods, patterns, and workflows\.](https://github.com/cypress-io/cypress-realworld-app)
   - ALC tested. cypress custom commands [https://docs.cypress.io/api/cypress-api/custom-commands#Parent-Commands Custom Commands | Cypress Documentation]
   - !!! Cypress best practices [Best Practices \| Cypress Documentation](https://docs.cypress.io/guides/references/best-practices#Organizing-Tests-Logging-In-Controlling-State)
+  - !!! Solving Clashing-types-with-Jest [TypeScript \| Cypress Documentation](https://docs.cypress.io/guides/tooling/typescript-support#Clashing-types-with-Jest)
 
 ## How to check if docker container is running remotely
 - [Docker Engine API v1\.41 Reference](https://docs.docker.com/engine/api/v1.41/#tag/Container)
