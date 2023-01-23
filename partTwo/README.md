@@ -66,6 +66,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - !!! Angular unit testing of observables. asynchronous RxJS code synchronously [RxJS \- Testing RxJS Code with Marble Diagrams](https://rxjs.dev/guide/testing/marble-testing)
   - testing observables explained. [How to test Observables\. The ultimate guide — never again be… \| by Kevin Kreuzer \| Angular In Depth \| Medium](https://medium.com/angular-in-depth/how-to-test-observables-a00038c7faad)
   - !!! using of marbleAssert to visualize actual vs expected marbles [kwonoj/rx\-sandbox: Marble diagram DSL based test suite for RxJS](https://github.com/kwonoj/rx-sandbox#anatomy-of-test-interface)  
+  - Using marble diagrams in real application [How To Easily Write And Debug RxJS Marble Tests](https://mokkapps.de/blog/how-to-easily-write-and-debug-rxjs-marble-tests/)  
   - testing HTTP services [Angular \- Testing services](https://angular.io/guide/testing-services#testing-http-services)
 
 ## ALC. Debugging Angular application

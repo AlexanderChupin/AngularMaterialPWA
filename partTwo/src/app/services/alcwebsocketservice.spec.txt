@@ -1,0 +1,90 @@
+// ALC. playing with marbles
+// [switchMap — RxJS operator example \+ marble diagram](https://thinkrx.io/rxjs/switchMap/)
+// @ts-ignore
+const { rxObserver, palette } = require('api/v0.3');
+// @ts-ignore
+const { from, timer, pipe, interval, of, fromEvent, empty, merge } = require('rxjs');
+// @ts-ignore
+const { throttleTime, debounceTime, debounce, zip, take, map, switchMap, delayWhen, scan, startWith, tap } = require('rxjs/operators');
+const pingInterval = 10
+
+const pauseResume$ =interval(pingInterval).pipe(take(5)).pipe(
+  scan(acc => !acc, true),
+  startWith(true)
+);
+const counter$ = timer(0, 2);
+
+const filtered$ = pauseResume$.pipe(
+  switchMap(resume => resume ? counter$ : empty())
+)
+
+
+let pingResume = true
+// timer(25).subscribe(()=>{
+//     pingResume = false
+// })
+
+
+
+// our source$ will emit values at 5ms, 10ms, 20ms
+const clicks$ = fromDelayed([ 15, 20, 30 ])
+  .pipe(
+    zip(from(palette), Marble) // colorize each item
+  );
+
+const switchMap$ = clicks$.pipe(
+  switchMap(x => timer(0, 3).pipe(
+    take(3),
+    tap({next:x=>{
+        pingResume = false
+      },
+      complete:()=>pingResume = true
+    }),
+    colorize(x.color))  // colorize as source$ value
+  )
+);
+
+const ping$ = interval(pingInterval).pipe(take(5))
+
+//ALC. pr = pause resume
+const ping_pr$ = ping$.pipe(
+  switchMap((x)=>pingResume?of(x):empty())
+)
+
+const result$=merge(clicks$,ping_pr$).pipe(
+  //debounceTime(0)
+  throttleTime(0)
+)
+
+// visualization
+pauseResume$.subscribe(rxObserver('pauseResume$'));
+filtered$.subscribe(rxObserver('filtered$'));
+ping$.subscribe(rxObserver('ping$'));
+ping_pr$.subscribe(rxObserver('ping_pr$'));
+clicks$.subscribe(rxObserver('clicks$'));
+switchMap$.subscribe(rxObserver('switchMap( timer(0, 3).take(3) )'));
+result$.subscribe(rxObserver('result$'));
+
+
+// helpers
+function colorize(color) {
+  return pipe(
+    map(y => Marble(y, color))
+  );
+}
+
+// creates a colored Marble
+function Marble(value,color) {
+  return {
+    valueOf: ()=>value
+    , color
+  };
+}
+
+// like .from, but items are delayed by their value
+function fromDelayed (arr) {
+  return from(arr).pipe(
+    delayWhen(x=>timer(x))
+  );
+}
+

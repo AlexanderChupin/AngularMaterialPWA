@@ -1,0 +1,92 @@
+// ALC. playing with marbles
+// [switchMap — RxJS operator example \+ marble diagram](https://thinkrx.io/rxjs/switchMap/)
+// @ts-ignore
+const { rxObserver, palette } = require('api/v0.3');
+// @ts-ignore
+const { from, timer, pipe, interval, of, fromEvent, empty, merge } = require('rxjs');
+// @ts-ignore
+const { throttleTime, debounceTime, debounce, zip, take, map, switchMap, delayWhen, scan, startWith, tap } = require('rxjs/operators');
+const pingInterval = 5
+
+const pauseResume$ =interval(pingInterval).pipe(take(5)).pipe(
+  scan(acc => !acc, true),
+  startWith(true)
+);
+const counter$ = timer(0, 2);
+
+const filtered$ = pauseResume$.pipe(
+  switchMap(resume => resume ? counter$ : empty())
+)
+
+
+let pingResume = true
+// timer(25).subscribe(()=>{
+//     pingResume = false
+// })
+
+
+const frames$=timer(0,1).pipe(take(25))
+
+// our source$ will emit values at 5ms, 10ms, 20ms
+const clicks$ = fromDelayed([10, 15, 30 ])
+  .pipe(
+    startWith(0),
+    zip(from(palette), Marble) // colorize each item
+  );
+
+// ALC. Recycle attempts
+const recycleFromClick$ = clicks$.pipe(
+  switchMap(x => timer(0, 1).pipe(
+    take(3),
+    colorize(x.color))  // colorize as source$ value
+  )
+);
+
+const ping$ = interval(pingInterval).pipe(take(3))
+
+
+const pingFromRecycle$ = recycleFromClick$.pipe(
+  switchMap(()=>ping$)
+)
+
+
+const result$=merge(clicks$,pingFromRecycle$).pipe(
+  //debounceTime(0)
+  //throttleTime(0)
+)
+
+// ALC. Demo of pause resume of the stream
+pauseResume$.subscribe(rxObserver('pauseResume$'));
+filtered$.subscribe(rxObserver('filtered$'));
+
+frames$.subscribe(rxObserver('frames$'));
+ping$.subscribe(rxObserver('ping$'));
+
+clicks$.subscribe(rxObserver('clicks$'));
+recycleFromClick$.subscribe(rxObserver('recycleFromClick$'));
+pingFromRecycle$.subscribe(rxObserver('pingFromRecycle$'));
+result$.subscribe(rxObserver('result$'));
+
+
+// helpers
+function colorize(color) {
+  return pipe(
+    map(y => Marble(y, color))
+  );
+}
+
+// creates a colored Marble
+function Marble(value,color) {
+  return {
+    valueOf: ()=>value
+    , color
+  };
+}
+
+// like .from, but items are delayed by their value
+function fromDelayed (arr) {
+  return from(arr).pipe(
+    delayWhen(x=>timer(x))
+  );
+}
+

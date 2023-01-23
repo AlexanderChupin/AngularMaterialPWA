@@ -4,8 +4,9 @@ import { AlcwebsocketService } from './alcwebsocket.service';
 import {InstanceIdService} from "./instance-id.service";
 import { TestScheduler } from 'rxjs/testing';
 import { rxSandbox } from 'rx-sandbox';
-import {throttleTime} from "rxjs";
+import {throttleTime, mergeWith, timer, take, of, Observable, merge} from "rxjs";
 import {SubscriptionLog} from "rx-sandbox/dist/utils/coreInternalImport";
+import {map, switchMap} from "rxjs/operators";
 
 describe('AlcwebsocketService', () => {
   let service: AlcwebsocketService;
@@ -109,17 +110,66 @@ describe('AlcwebsocketService', () => {
   });
 
   // This test runs synchronously.
-  /*it('clicks translated into _obsReconnectNewCycle', () => {
-    testScheduler.run(({ expectSubscriptions, hot, expectObservable }) => {
-      const clicks = hot('--a-----a--a-1a----a--');
-      const sub1 =              '--^-----------!';
-      const sub2 =              '---------^--------!';
-      const expect1 =           '--a-----a--a-1';
-      const expect2 =           '-----------a-1a---------';
-      expectObservable(clicks, sub1).toBe(expect1);
-      expectObservable(clicks, sub2).toBe(expect2);
-      expectSubscriptions(clicks.subscriptions).toBe([sub1, sub2]);
+  it('clicks translated into _obsReconnectNewCycle', () => {
+    testScheduler.run(({ expectSubscriptions, hot, cold,expectObservable, time }) => {
+
+      const clicks$   = hot('c--------c----c--------------c--------------------')
+      const e_recycleFromClick$ =  '012------012--012------------012------------------';
+      const e_pingFromRecycle$  =  '------0-------------0----1---------0----1----2---';
+      const e_result$ =            'c-----0--c----c-----0----1---c-----0----1----2---';
+      const s_result$ =            '^------------------------------------------------!';
+
+      const recycle = cold('012|')
+      const s_recycle0 =           '^--!';
+      const s_recycle9 =           '---------^--!';
+      const s_recycle14 =          '--------------^--!';
+      const s_recycle29 =          '-----------------------------^--!';
+
+      const ping =     cold('----0----1----2----3----4----5--')
+      const s_ping0 =              '^!';
+      const s_ping1 =              '-^!';
+      const s_ping2 =              '--^------!';
+      const s_ping9 =              '---------^!';
+      const s_ping10 =             '----------^!';
+      const s_ping11 =             '-----------^--!';
+      const s_ping14 =             '--------------^!';
+      const s_ping15 =             '---------------^!';
+      const s_ping16 =             '----------------^------------!';
+      const s_ping29 =             '-----------------------------^!'
+      const s_ping30 =             '------------------------------^!'
+      const s_ping31 =             '-------------------------------^-----------------!'
+
+
+      const expect2 =              '--1c----2---c--c----4-----c-----c--';
+      const recycleFromClick$:Observable<string> = clicks$.pipe(
+        switchMap((x)=>recycle
+        )
+      );
+      const pingFromRecycle$:Observable<string> = recycleFromClick$.pipe(
+        switchMap(()=>ping)
+      )
+
+      //ALC. result$ - is the main signal to recycle the connection. Either from manual button click or from automatic ping intervals
+      // @ts-ignore
+      const result$:Observable<string> = merge(clicks$,pingFromRecycle$);
+
+      expectObservable(recycleFromClick$, s_result$).toBe(e_recycleFromClick$);
+      expectSubscriptions(clicks$.subscriptions).toBe([s_result$,s_result$,s_result$,s_result$]);
+      expectSubscriptions(recycle.subscriptions).toBe([
+        s_recycle0,s_recycle0,s_recycle0,
+        s_recycle9, s_recycle9,s_recycle9,
+        s_recycle14,s_recycle14,s_recycle14,
+        s_recycle29,s_recycle29,s_recycle29,
+      ]);
+      expectObservable(pingFromRecycle$, s_result$).toBe(e_pingFromRecycle$);
+      expectSubscriptions(ping.subscriptions).toBe([
+        s_ping0,s_ping0,s_ping1,s_ping1,s_ping2,s_ping2,
+        s_ping9,s_ping9,s_ping10,s_ping10,s_ping11,s_ping11,
+        s_ping14,s_ping14,s_ping15,s_ping15,s_ping16,s_ping16,
+        s_ping29,s_ping29,s_ping30,s_ping30,s_ping31,s_ping31
+      ]);
+      expectObservable(result$, s_result$).toBe(e_result$);
     });
-  });*/
+  });
 
 });
