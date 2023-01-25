@@ -3,30 +3,21 @@ import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import { environment } from '../../environments/environment';
 import {
   Observable,
-  timer,
   Subject,
   EMPTY,
   of,
-  throwError,
-  retry,
-  takeWhile,
   interval,
   range,
-  take,
-  pipe,
-  OperatorFunction, share, fromEvent, race, merge, Observer, Subscription
+  Observer, Subscription
 } from 'rxjs';
 import {
-  retryWhen,
   tap,
   delayWhen,
   switchAll,
   catchError,
   delay,
   takeUntil,
-  map,
-  concatAll,
-  concatMap
+  concatMap, switchMap
 } from 'rxjs/operators';
 import {InstanceIdService} from "./instance-id.service";
 import {LoggerService as Logger} from "./logger.service";
@@ -63,6 +54,11 @@ export class AlcwebsocketService implements OnDestroy {
    * @private
    */
   private _reconnectCounter$: Subject<any> = new Subject<any>();
+  /**
+   * ALC. notifier to complete reconnect cycle
+   * @private
+   */
+  private _reconnectCounterComplete$: Subject<any> = new Subject<any>();
   // ALC. subscription to _reconnectCounter
   private _subsReconnectCounter: Subscription;
 
@@ -87,21 +83,53 @@ export class AlcwebsocketService implements OnDestroy {
     }
   }};
 
-  // ALC. emit new reconnection cycle by ping-pong timeout or manual push
-  /*private _obsReconnectNewCycle: Observable<null> = merge(
-    /!*interval(50000),*!/
-    this._clicks)
-    .pipe(
-      takeUntil(this.notifierUnsubscribeAll),
-      tap(this._debugObserver('_obsReconnectNewCycle/source'))
-    );*/
-  private _obsReconnectNewCycle = this._clicks.pipe(tap(this._debugObserver('_obsReconnectNewCycle/source')));
+  //ALC. ping-pong intervals
+  private _ping = interval(environment.ping_pong_websocket_timeout);
+  // ALC. intermediate observable to lunch reconnect cycle
+  private _recycleFromClick$ = this._clicks.pipe(
+    takeUntil(this.notifierUnsubscribeAll),
+    switchMap((x)=>this._reconnectCounter.pipe(
+      //ALC. reset reconnect cycle when websocket connection is established
+      takeUntil(this._reconnectCounterComplete$),
+      tap(this._debugObserver('_recycleFromClick$'))
+      )
+    )
+  );
 
+  // ALC. intermediate observable to ping-pong reconnect cycle
+  private _pingFromRecycle = this._recycleFromClick$.pipe(
+    takeUntil(this.notifierUnsubscribeAll),
+    switchMap((x)=>this._ping.pipe(
+      tap(this._debugObserver('_pingFromRecycle'))
+      )
+    )
+  );
+  //private _obsReconnectNewCycle = merge(this._recycleFromClick$,this._pingFromRecycle).pipe(tap(this._debugObserver('_obsReconnectNewCycle')));
+  /**
+   * ALC. Observer for the manual connection attempt
+   * @param v the attempt number within a reconnection cycle
+   */
+  private _ObsrRecycleFromClick = (v):void =>{
+      this.connect()
+    }
+  /**
+   * ALC. Observer for the ping. If connected already just get pong response from the server
+   * @param v the number of a ping-pong event
+   */
+  private _obsrPingFromRecycle = (v):void =>{
+    if (this._state ==  'connected'){
+      let jsonString = JSON.stringify({'type':'system','ping':v})
+      //let jsonString = 'ping';
+      this.sendMessage(jsonString);
+      return;
+    }
+    this.connect()
+  }
+  //private _subsReconnectNewCycle: Subscription;
   /**
    * controlling reconnect attempts
    * emitting flag(counter number) to start websocket connection immediately.
    * next counter is ignited by _reconnectCounter$ and delayed by {number * environment.msecDelay_websocket} (msec)
-   * the counter is reset by _obsReconnectNewCycle (the combination of ping_pong_websocket_timeout or manual button click)
    */
   private _reconnectCounter: Observable<number> = range(0, environment.intRetries_websocket*environment.intAttempts_websocket-1).
   pipe(
@@ -116,18 +144,6 @@ export class AlcwebsocketService implements OnDestroy {
     tap(this._debugObserver('_reconnectCounter')),
   );
 
-  /**
-   * ALC. Unsubscribe from reconnect counter (needed to reset the counter) and subscribe back (restarting the counter)
-   */
-  private _resetReconnectConfig = (): void =>{
-    this._subsReconnectCounter ? this._subsReconnectCounter.unsubscribe() : null;
-    this._subsReconnectCounter = this._reconnectCounter.subscribe({
-      // ALC. try to connect on counter
-      next:v=>this.connect()/*,
-      //ALC. wait until NewCycle observable
-      complete:()=>this._obsReconnectNewCycle.pipe(take(1)).subscribe(()=>this.connect({reconnect:true}))*/
-    })
-  }
   /**
    * Creates a new WebSocket subject(once during init), connects to server (by sending it to the messages subject)
    * @param cfg {reconnect:true} to subscribe to new reconnect cycle and connect to server
@@ -147,18 +163,13 @@ export class AlcwebsocketService implements OnDestroy {
           EMPTY
         ))
       this._state = 'websocket_created'
-      //ALC. always wait for new reconnection cycle
-      this._obsReconnectNewCycle.subscribe(()=>this.connect({reconnect:true}))
-      this.connect({reconnect:true});
-    return;
-    }
-
-    // ALC. subscribe to reconnect on ping-pong interval or manual push
-    if (cfg.reconnect){
-      this._resetReconnectConfig();
-      this._reconnectCounter$.next(null);
+      //ALC. always wait for new reconnection cycle or ping-pong. Subscribe once during the service init
+      this._recycleFromClick$.subscribe(this._ObsrRecycleFromClick);
+      this._pingFromRecycle.subscribe(this._obsrPingFromRecycle);
+      this.onRecycle();
       return;
     }
+
     //toDO only next an observable if a new subscription was made double-check this
     this.messagesSubject$.next(this._messages);
   }
@@ -187,13 +198,18 @@ export class AlcwebsocketService implements OnDestroy {
         next: () => {
           this._state = 'connected';
           Logger.log('[alcwebsocket.service]: _state = ',this._state);
-          this._resetReconnectConfig();
+          this._reconnectCounterComplete$.next(null);
         }
       },
       closeObserver: {
         next: (e: CloseEvent) => {
           Logger.warn('[alcwebsocket.service] connection closed = ', e);
+          let prev_state = this._state;
           this._state = 'disconnected';
+          // ALC if was connected before then start new connection cycle
+          if (prev_state == 'connected') {
+            this._clicks.next(0);
+          }
           (e.code == 1000 )?null:this._reconnectCounter$.next(null);
         }
       }
@@ -207,7 +223,11 @@ export class AlcwebsocketService implements OnDestroy {
     Logger.log('[alcwebsocket.service] is destroyed');
   }
 
+  /**
+   * ALC. initiates new connection cycle. After connection cycle completes pinging server
+   */
   onRecycle() {
     this._clicks.next(0);
+    this._reconnectCounter$.next(null);
   }
 }
