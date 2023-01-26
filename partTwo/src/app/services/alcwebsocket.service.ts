@@ -59,8 +59,6 @@ export class AlcwebsocketService implements OnDestroy {
    * @private
    */
   private _reconnectCounterComplete$: Subject<any> = new Subject<any>();
-  // ALC. subscription to _reconnectCounter
-  private _subsReconnectCounter: Subscription;
 
   constructor(
     private instanceIdService: InstanceIdService,
@@ -89,6 +87,7 @@ export class AlcwebsocketService implements OnDestroy {
   private _recycleFromClick$ = this._clicks.pipe(
     takeUntil(this.notifierUnsubscribeAll),
     switchMap((x)=>this._reconnectCounter.pipe(
+      takeUntil(this.notifierUnsubscribeAll),
       //ALC. reset reconnect cycle when websocket connection is established
       takeUntil(this._reconnectCounterComplete$),
       tap(this._debugObserver('_recycleFromClick$'))
@@ -100,6 +99,7 @@ export class AlcwebsocketService implements OnDestroy {
   private _pingFromRecycle = this._recycleFromClick$.pipe(
     takeUntil(this.notifierUnsubscribeAll),
     switchMap((x)=>this._ping.pipe(
+      takeUntil(this.notifierUnsubscribeAll),
       tap(this._debugObserver('_pingFromRecycle'))
       )
     )
@@ -137,6 +137,7 @@ export class AlcwebsocketService implements OnDestroy {
     // ALC. delay the single reconnect attempt
     concatMap((v,i)=>of(v).pipe(
       delayWhen((v)=>this._reconnectCounter$.pipe(
+        takeUntil(this.notifierUnsubscribeAll),
         delay(v*environment.msecDelay_websocket),
         ),
       )),

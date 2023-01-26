@@ -4,12 +4,17 @@ import { AlcwebsocketService } from './alcwebsocket.service';
 import {InstanceIdService} from "./instance-id.service";
 import { TestScheduler } from 'rxjs/testing';
 import { rxSandbox } from 'rx-sandbox';
-import {throttleTime, mergeWith, timer, take, of, Observable, merge} from "rxjs";
+import {throttleTime, mergeWith, timer, take, of, Observable, merge, Subject} from "rxjs";
 import {SubscriptionLog} from "rx-sandbox/dist/utils/coreInternalImport";
 import {map, switchMap} from "rxjs/operators";
+import {InjectionToken} from "@angular/core";
+// ALC. see [typescript \- How to mock rxjs/Websocket in angular for Unit Testing \- Stack Overflow](https://stackoverflow.com/questions/61325961/how-to-mock-rxjs-websocket-in-angular-for-unit-testing)
+// I only imported as rxjsWebsocket because I wanted to use webSocket in my service
+import { webSocket as rxjsWebsocket, WebSocketSubject } from 'rxjs/webSocket';
 
 describe('AlcwebsocketService', () => {
   let service: AlcwebsocketService;
+  let serviceStub;//: jasmine.SpyObj<AlcwebsocketService>;
   let instanceIdService: jasmine.SpyObj<InstanceIdService>;
   let testScheduler: TestScheduler;
 
@@ -24,16 +29,41 @@ describe('AlcwebsocketService', () => {
     return arr;
   }
 
+  // ALC. see [How To Easily Write And Debug RxJS Marble Tests](https://mokkapps.de/blog/how-to-easily-write-and-debug-rxjs-marble-tests/)
+  // we mock the API alcwebsocketService and return mocked observables which are created by marble strings
+  const testData=[
+    {type:"system", message:83}
+  ]
+  const fake_alcwebsocketService = jasmine.createSpyObj('AlcwebsocketService', [
+    'getNewWebSocket',
+    'connect'
+  ]);
+
+  // Fun fact: You can use "typeof rxjsWebsocket" as the type to cleanly say "whatever that thing is"
+  const WEBSOCKET_CTOR = new InjectionToken<typeof rxjsWebsocket>(
+    'rxjs/webSocket.webSocket', // This is what you'll see in the error when it's missing
+    {
+      providedIn: 'root',
+      factory: () => rxjsWebsocket, // This is how it will create the thing needed unless you offer your own provider, which we'll do in the spec
+    }
+  );
+
+
   beforeEach(() => {
+    //ALC. see https://angular.io/guide/testing-services#testing-http-services
     const instanceIdServiceStub =  jasmine.createSpyObj('InstanceIdService', ['getNextId']);
     instanceIdServiceStub.getNextId.and.returnValue(0);
+
     //ALC. [Объекты Spy ⚡️ Angular с примерами кода](https://angdev.ru/doc/unit-testing-spy-objects/)
     //const appServiceSpy = spyOn(instanceIdService, 'getNextId'); - could be easily replaced by direct calls of similar functions on stub
 
     TestBed.configureTestingModule({
-      providers:[{provide: InstanceIdService , useValue: instanceIdServiceStub}]
+      providers:[
+        AlcwebsocketService,//{provide: AlcwebsocketService , useValue: serviceStub},
+        {provide: InstanceIdService , useValue: instanceIdServiceStub}
+        ]
     });
-    service = TestBed.inject(AlcwebsocketService);
+    service = TestBed.inject(AlcwebsocketService)/* as jasmine.SpyObj<AlcwebsocketService>*/;
     instanceIdService = TestBed.inject(InstanceIdService) as jasmine.SpyObj<InstanceIdService>;
 
     const { hot, cold, flush, getMessages, e, s} = rxSandbox.create();
@@ -54,6 +84,16 @@ describe('AlcwebsocketService', () => {
       } else {
         rxSandbox.marbleAssert(actual).toEqual(expected);
       }
+
+      // ALC. see [How To Easily Write And Debug RxJS Marble Tests](https://mokkapps.de/blog/how-to-easily-write-and-debug-rxjs-marble-tests/)
+      // we mock the API alcwebsocketService and return mocked observables which are created by marble strings
+
+      // Mocking the websocket
+      let fakeSocket: Subject<any>; // Exposed so we can spy on it and simulate server messages
+      const fakeSocketCtor = jasmine
+        .createSpy('WEBSOCKET_CTOR')
+        .and.callFake(() => fakeSocket); // need to call fake so we can keep re-assigning to fakeSocket
+
       expect(actual).toEqual(expected);
     });
   });
@@ -171,5 +211,32 @@ describe('AlcwebsocketService', () => {
       expectObservable(result$, s_result$).toBe(e_result$);
     });
   });
+// This test runs synchronously.
+  it('getWebsocket', () => {
+    //alcwebsocketService.connect();
+    testScheduler.run(({ expectSubscriptions, hot, expectObservable }) => {
+      serviceStub = jasmine.createSpyObj('AlcwebsocketService', ['connect', 'ngOnDestroy']);
+      serviceStub.connect.and.callFake(()=>{
+        console.log('ALC. connect.and.callFake');
+        service.messages$ =
+          hot('a-^-a-a---a|', {
+            a: testData[0]
+          })
+      });
+      serviceStub.ngOnDestroy.and.callFake(()=>{
+        console.log('ALC. connect.and.callFake');
+        service.ngOnDestroy()
+      });
 
+      serviceStub.connect();
+      expect(serviceStub.connect).toHaveBeenCalled();
+      const sub1 =              '--^-----------!';
+      const expect1 =           '--^-a-a---a|';
+      expectObservable(service.messages$, sub1).toBe(expect1,{
+        a: testData[0]
+      });
+      serviceStub.ngOnDestroy();
+    });
+
+  });
 });

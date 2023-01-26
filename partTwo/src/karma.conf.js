@@ -10,7 +10,8 @@ module.exports = function (config) {
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
-      require('@angular-devkit/build-angular/plugins/karma')
+      require('@angular-devkit/build-angular/plugins/karma'),
+      "karma-spec-reporter"
     ],
     client: {
       clearContext: false, // leave Jasmine Spec Runner output visible in browser
@@ -24,10 +25,26 @@ module.exports = function (config) {
       reports: ['html', 'lcovonly'],
       fixWebpackSourcePaths: true
     },
-    reporters: ['progress', 'kjhtml'],
+    reporters: ['spec','kjhtml'], //'progress'
+    specReporter: {
+      maxLogLines: 5,             // limit number of lines logged per test
+      suppressSummary: false,      // do not print summary
+      suppressErrorSummary: true, // do not print error summary
+      suppressFailed: false,      // do not print information about failed tests
+      suppressPassed: false,      // do not print information about passed tests
+      suppressSkipped: true,      // do not print information about skipped tests
+      showBrowser: false,         // print the browser for each spec
+      showSpecTiming: false,      // print the time elapsed for each spec
+      failFast: true,             // test would finish with error when a first fail occurs
+      prefixes: {
+        success: '    OK: ',      // override prefix for passed tests, default is '✓ '
+        failure: 'FAILED: ',      // override prefix for failed tests, default is '✗ '
+        skipped: 'SKIPPED: '      // override prefix for skipped tests, default is '- '
+      }
+    },
     port: 9876,
     colors: true,
-    logLevel: config.LOG_INFO,
+    logLevel: config.LOG_INFO,//LOG_DEBUG,
     //logLevel:config.LOG_DEBUG,
     autoWatch: true,
     browsers: ['Chrome_default_profile'],//'Chrome' //'Chrome_default_profile',
