@@ -68,6 +68,8 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
   - !!! using of marbleAssert to visualize actual vs expected marbles [kwonoj/rx\-sandbox: Marble diagram DSL based test suite for RxJS](https://github.com/kwonoj/rx-sandbox#anatomy-of-test-interface)  
   - Using marble diagrams in real application [How To Easily Write And Debug RxJS Marble Tests](https://mokkapps.de/blog/how-to-easily-write-and-debug-rxjs-marble-tests/)  
   - testing HTTP services [Angular \- Testing services](https://angular.io/guide/testing-services#testing-http-services)
+- Structured log of unit tests instead of the standard 'progress' [Karma \- Plugins](http://karma-runner.github.io/6.4/config/plugins.html)
+  - [karma\-spec\-reporter \- npm](https://www.npmjs.com/package/karma-spec-reporter)  
 
 ## ALC. Debugging Angular application
 - [Angular \| IntelliJ IDEA](https://www.jetbrains.com/help/idea/angular.html#angular_running_and_debugging)
