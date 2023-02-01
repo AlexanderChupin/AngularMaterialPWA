@@ -46,9 +46,9 @@ export class AlcwebsocketService implements OnDestroy {
   private _messages: Observable<any>;
   private _messagesSubject$ = new Subject();
   // ALC. subject!!! required to keep permanent connection ot different component. Emiting content messages to content subscribers
-  public messages$:Subject<any> = new Subject<any>()
+  public messages$: Subject<any> = new Subject<any>()
   // ALC. observable to switch for new websocket stream after reconnect
-  private _messages_switched: Observable<any> = this._messagesSubject$.pipe(
+  private _messagesSwitched: Observable<any> = this._messagesSubject$.pipe(
     switchAll(),
     catchError(e => {
       throw e
@@ -58,16 +58,16 @@ export class AlcwebsocketService implements OnDestroy {
   /**
    * ALC filtered system messages from websocket
    */
-  systemMsg$ = this._messages_switched.pipe(
+  systemMsg$ = this._messagesSwitched.pipe(
     tap({
-      next:v=>{
-        let a=1;
+      next: v => {
+        let a = 1;
       },
-      error:e=>{
-        let a=1;
+      error: e => {
+        let a = 1;
       },
-      complete:()=>{
-        let a=1;
+      complete: () => {
+        let a = 1;
       }
     })/*,
     filter((v:any,i:number) => {
@@ -79,7 +79,7 @@ export class AlcwebsocketService implements OnDestroy {
   /**
    * ALC. public informer on _state update
    */
-  public _state$: Subject<webSocketState> =  new Subject<webSocketState>();
+  public _state$: Subject<webSocketState> = new Subject<webSocketState>();
   //ALC. manual push from Angular button.
   private _clicks = new Subject();
 
@@ -93,21 +93,22 @@ export class AlcwebsocketService implements OnDestroy {
    * @private
    */
   private _reconnectCounterComplete$: Subject<any> = new Subject<any>();
+  private _subsMessagesSwitched: Subscription;
 
   constructor(
     private instanceIdService: InstanceIdService,
     private alcRxjsToolsService: AlcRxjsToolsService) {
-    this._alcInstId =  instanceIdService.getNextId();
+    this._alcInstId = instanceIdService.getNextId();
     this._reconnectCounterComplete$
       .pipe(takeUntil(this._notifierUnsubscribeAll$))
-      .subscribe(()=>this.connected())
+      .subscribe(() => this.connected())
     this.createWebScoket();
   }
 
   /**
    * AKC. lunched with connection to the websocket server is established
    */
-  connected = ()=>{
+  connected = () => {
     this._state = 'connected';
     this._state$.next(webSocketState.connected);
   }
@@ -117,22 +118,24 @@ export class AlcwebsocketService implements OnDestroy {
    * @private
    * @debugObsle string name of observable to display in the log
    */
-  private _debugObserver = (debugObsle: string): Observer<any> => {return {
-    next:(v)=>Logger.log(`[alcwebsocket.service] ${debugObsle} next = `,v), //this.connect({ reconnect: true })
-    error:(err)=>{
-      Logger.warn(`[alcwebsocket.service] ${debugObsle} error = `,err)
-    },
-    complete:()=>{
-      Logger.warn(`[alcwebsocket.service] ${debugObsle} complete`);
+  private _debugObserver = (debugObsle: string): Observer<any> => {
+    return {
+      next: (v) => Logger.log(`[alcwebsocket.service] ${debugObsle} next = `, v), //this.connect({ reconnect: true })
+      error: (err) => {
+        Logger.warn(`[alcwebsocket.service] ${debugObsle} error = `, err)
+      },
+      complete: () => {
+        Logger.warn(`[alcwebsocket.service] ${debugObsle} complete`);
+      }
     }
-  }};
+  };
 
   //ALC. ping-pong intervals
   private _ping = interval(environment.ping_pong_websocket_timeout);
   // ALC. intermediate observable to lunch reconnect cycle
   private _recycleFromClick$ = this._clicks.pipe(
     takeUntil(this._notifierUnsubscribeAll$),
-    switchMap((x)=>this._reconnectCounter.pipe(
+    switchMap((x) => this._reconnectCounter.pipe(
       takeUntil(this._notifierUnsubscribeAll$),
       //ALC. reset reconnect cycle when websocket connection is established
       takeUntil(this._reconnectCounterComplete$),
@@ -144,7 +147,7 @@ export class AlcwebsocketService implements OnDestroy {
   // ALC. intermediate observable to ping-pong reconnect cycle
   private _pingFromRecycle = this._recycleFromClick$.pipe(
     takeUntil(this._notifierUnsubscribeAll$),
-    switchMap((x)=>this._ping.pipe(
+    switchMap((x) => this._ping.pipe(
       takeUntil(this._notifierUnsubscribeAll$),
       tap(this._debugObserver('_pingFromRecycle'))
       )
@@ -155,16 +158,17 @@ export class AlcwebsocketService implements OnDestroy {
    * ALC. Observer for the manual connection attempt
    * @param v the attempt number within a reconnection cycle
    */
-  private _obsrRecycleFromClick = (v):void =>{
-      this.connect()
-    }
+  private _obsrRecycleFromClick = (v): void => {
+    this.wsReset();
+    this.connect();
+  }
   /**
    * ALC. Observer for the ping. If connected already just get pong response from the server
    * @param v the number of a ping-pong event
    */
-  private _obsrPingFromRecycle = (v):void =>{
-    if (this._state ==  'connected'){
-      let jsonString = JSON.stringify({'type':'system','ping':v})
+  private _obsrPingFromRecycle = (v): void => {
+    if (this._state == 'connected') {
+      let jsonString = JSON.stringify({'type': 'system', 'ping': v})
       //let jsonString = 'ping';
       this.sendMessage(jsonString);
       return;
@@ -177,14 +181,13 @@ export class AlcwebsocketService implements OnDestroy {
    * emitting flag(counter number) to start websocket connection immediately.
    * next counter is ignited by _reconnectCounter$ and delayed by {number * environment.msecDelay_websocket} (msec)
    */
-  private _reconnectCounter: Observable<number> = range(0, environment.intRetries_websocket*environment.intAttempts_websocket-1).
-  pipe(
+  private _reconnectCounter: Observable<number> = range(0, environment.intRetries_websocket * environment.intAttempts_websocket - 1).pipe(
     takeUntil(this._notifierUnsubscribeAll$),
     // ALC. delay the single reconnect attempt
-    concatMap((v,i)=>of(v).pipe(
-      delayWhen((v)=>this._reconnectCounter$.pipe(
+    concatMap((v, i) => of(v).pipe(
+      delayWhen((v) => this._reconnectCounter$.pipe(
         takeUntil(this._notifierUnsubscribeAll$),
-        delay(v*environment.msecDelay_websocket),
+        delay(v * environment.msecDelay_websocket),
         ),
       )),
     ),
@@ -195,7 +198,7 @@ export class AlcwebsocketService implements OnDestroy {
    * Creates a new WebSocket subject(once during init), connects to server (by sending it to the messages subject)
    * @param cfg {reconnect:true} to subscribe to new reconnect cycle and connect to server
    */
-  public connect(cfg: { reconnect: boolean } = { reconnect: false }): void {
+  public connect(cfg: { reconnect: boolean } = {reconnect: false}): void {
     /*//ALC. create new _socket$ only once during service init. Retry logic is implemented in next blocks.
     if (!this._socket$ || this._socket$.closed || !this._messages) {
       this._socket$ = this.getNewWebSocket();
@@ -214,7 +217,7 @@ export class AlcwebsocketService implements OnDestroy {
       //ALC. always wait for new reconnection cycle or ping-pong. Subscribe once during the service init
       this._recycleFromClick$.subscribe(this._obsrRecycleFromClick);
       this._pingFromRecycle.subscribe(this._obsrPingFromRecycle);
-      this._messages_switched.subscribe((v:any)=>this.messages$.next(v));
+      this._messagesSwitched.subscribe((v:any)=>this.messages$.next(v));
       this.onRecycle();
       return;
     }*/
@@ -229,11 +232,11 @@ export class AlcwebsocketService implements OnDestroy {
   }
 
   sendMessage(msg: any) {
-    const tmp = {"data":msg};
+    const tmp = {"data": msg};
     this._socket$.next(tmp);
   }
 
-  getInstanceId (): number{
+  getInstanceId(): number {
     return this._alcInstId;
   }
 
@@ -260,7 +263,7 @@ export class AlcwebsocketService implements OnDestroy {
           if (prev_state == 'connected') {
             this._clicks.next(0);
           }
-          (e.code == 1000 )?null:this._reconnectCounter$.next(null);
+          (e.code == 1000) ? null : this._reconnectCounter$.next(null);
         }
       }
     });
@@ -281,7 +284,7 @@ export class AlcwebsocketService implements OnDestroy {
     this._reconnectCounter$.next(null);
   }
 
-  getState = ():string=>this._state;
+  getState = (): string => this._state;
 
   /**
    * ALC open new WebScoket and create reconnection logic
@@ -289,23 +292,29 @@ export class AlcwebsocketService implements OnDestroy {
    */
   private createWebScoket() {
     //ALC. create new _socket$ only once during service init. Retry logic is implemented in next blocks.
-      this._socket$ = this.getNewWebSocket();
+    this._socket$ = this.getNewWebSocket();
 
-      // ToDo: introduce delay and max number of attempts between consecutive retries using timer() observable
-      this._messages = this._socket$.pipe(
-        // takeUntil(this._notifierUnsubscribeAll$),
-        // tap(this._debugObserver('_socket$')),
-        /*cfg.reconnect ? this.reconnect() : o => o,*/
-        //retry({delay:2000}),
-        catchError(_ =>
-          EMPTY
-        ))
-      this._state = 'websocket_created';
-      this._state$.next(webSocketState.websocket_created);
-      //ALC. always wait for new reconnection cycle or ping-pong. Subscribe once during the service init
-      this._recycleFromClick$.subscribe(this._obsrRecycleFromClick);
-      this._pingFromRecycle.subscribe(this._obsrPingFromRecycle);
-      this._messages_switched.subscribe((v:any)=>this.messages$.next(v));
-      this.onRecycle();
+    // ToDo: introduce delay and max number of attempts between consecutive retries using timer() observable
+    this._messages = this._socket$.pipe(
+      // takeUntil(this._notifierUnsubscribeAll$),
+      // tap(this._debugObserver('_socket$')),
+      /*cfg.reconnect ? this.reconnect() : o => o,*/
+      //retry({delay:2000}),
+      catchError(_ =>
+        EMPTY
+      ))
+    this._state = 'websocket_created';
+    this._state$.next(webSocketState.websocket_created);
+    //ALC. always wait for new reconnection cycle or ping-pong. Subscribe once during the service init
+    this._recycleFromClick$.subscribe(this._obsrRecycleFromClick);
+    this._pingFromRecycle.subscribe(this._obsrPingFromRecycle);
+    this._subsMessagesSwitched= this._messagesSwitched.subscribe((v: any) => this.messages$.next(v));
+    this.onRecycle();
+  }
+
+  //ALC. reset websocket by getting new client id
+  public wsReset = ()=>{
+    this._subsMessagesSwitched.unsubscribe();
+    this._subsMessagesSwitched= this._messagesSwitched.subscribe((v: any) => this.messages$.next(v));
   }
 }

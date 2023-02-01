@@ -32,10 +32,10 @@ export class AlcserverService{
   ) {
     Logger.log('[alcserver.service] _websocket_service.getInstanceId()=',this._websocket_service.getInstanceId());
     Logger.log('[alcserver.service] _websocket_service.getState()=',this._websocket_service.getState())
-    if (this._websocket_service.getState() !=='connected')
+    /*if (this._websocket_service.getState() !=='connected')
     {
       this._websocket_service.connect()
-    }
+    }*/
     this._websocket_service.systemMsg$.subscribe((v:any)=>Logger.log('[alcserver.service] websocket system message =',v));
     this._websocket_service._state$.subscribe((v)=>{
       Logger.log('[alcserver.service] _websocket_service._state$ received', v)

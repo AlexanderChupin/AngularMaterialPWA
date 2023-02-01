@@ -147,9 +147,9 @@ export class SqlComponent implements OnInit, AfterViewInit {
     let a = 1;
     this.onTogleGwOn(new Event('test'));
     // this.connect();
-    if (this._websocket_service.getState() !=='connected'){
+    /*if (this._websocket_service.getState() !=='connected'){
       this.connect();
-    }
+    }*/
   }
 
 
@@ -158,6 +158,7 @@ export class SqlComponent implements OnInit, AfterViewInit {
     this._websocket_service.sendMessage(this.content);
   }
   connect() {
+    this._websocket_service.wsReset();
     this._websocket_service.connect();
   }
 
