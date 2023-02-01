@@ -14,8 +14,8 @@ import { webSocket as rxjsWebsocket, WebSocketSubject } from 'rxjs/webSocket';
 
 describe('AlcwebsocketService', () => {
   let service: AlcwebsocketService;
-  let serviceStub;//: jasmine.SpyObj<AlcwebsocketService>;
-  let instanceIdService: jasmine.SpyObj<InstanceIdService>;
+  let serviceStub: jasmine.SpyObj<AlcwebsocketService>;
+  let instanceIdServiceStub: jasmine.SpyObj<InstanceIdService>;
   let testScheduler: TestScheduler;
 
   //ALC. [javascript \- How to use instanceof with a class which is not defined in the current context? \- Stack Overflow](https://stackoverflow.com/questions/62937658/how-to-use-instanceof-with-a-class-which-is-not-defined-in-the-current-context)
@@ -51,20 +51,21 @@ describe('AlcwebsocketService', () => {
 
   beforeEach(() => {
     //ALC. see https://angular.io/guide/testing-services#testing-http-services
-    const instanceIdServiceStub =  jasmine.createSpyObj('InstanceIdService', ['getNextId']);
+    instanceIdServiceStub =  jasmine.createSpyObj('InstanceIdService', ['getNextId']);
     instanceIdServiceStub.getNextId.and.returnValue(0);
+    serviceStub = jasmine.createSpyObj('AlcwebsocketService', ['connect', /*'ngOnDestroy',*/ 'getInstanceId']);
 
     //ALC. [Объекты Spy ⚡️ Angular с примерами кода](https://angdev.ru/doc/unit-testing-spy-objects/)
-    //const appServiceSpy = spyOn(instanceIdService, 'getNextId'); - could be easily replaced by direct calls of similar functions on stub
+    //const appServiceSpy = spyOn(instanceIdServiceStub, 'getNextId'); - could be easily replaced by direct calls of similar functions on stub
 
     TestBed.configureTestingModule({
       providers:[
-        AlcwebsocketService,//{provide: AlcwebsocketService , useValue: serviceStub},
+        /*AlcwebsocketService,*/{provide: AlcwebsocketService , useValue: serviceStub},
         {provide: InstanceIdService , useValue: instanceIdServiceStub}
         ]
     });
-    service = TestBed.inject(AlcwebsocketService)/* as jasmine.SpyObj<AlcwebsocketService>*/;
-    instanceIdService = TestBed.inject(InstanceIdService) as jasmine.SpyObj<InstanceIdService>;
+    service = TestBed.inject(AlcwebsocketService) as jasmine.SpyObj<AlcwebsocketService>;
+    instanceIdServiceStub = TestBed.inject(InstanceIdService) as jasmine.SpyObj<InstanceIdService>;
 
     const { hot, cold, flush, getMessages, e, s} = rxSandbox.create();
     testScheduler = new TestScheduler((actual, expected) => {
@@ -99,10 +100,11 @@ describe('AlcwebsocketService', () => {
   });
 
   it('should be created with instance id = 0', () => {
+    serviceStub.getInstanceId.and.callFake(instanceIdServiceStub.getNextId);
     expect(service).toBeTruthy();
     expect(service.getInstanceId()).toBe(0);
-    expect(instanceIdService.getNextId).toHaveBeenCalled();
-    expect(instanceIdService.getNextId.calls.count()).toBe(1)
+    expect(instanceIdServiceStub.getNextId).toHaveBeenCalled();
+    expect(instanceIdServiceStub.getNextId.calls.count()).toBe(1)
   });
 
   // This test runs synchronously.
@@ -211,32 +213,31 @@ describe('AlcwebsocketService', () => {
       expectObservable(result$, s_result$).toBe(e_result$);
     });
   });
-// This test runs synchronously.
-  it('getWebsocket', () => {
-    //alcwebsocketService.connect();
-    testScheduler.run(({ expectSubscriptions, hot, expectObservable }) => {
-      serviceStub = jasmine.createSpyObj('AlcwebsocketService', ['connect', 'ngOnDestroy']);
-      serviceStub.connect.and.callFake(()=>{
-        console.log('ALC. connect.and.callFake');
-        service.messages$ =
-          hot('a-^-a-a---a|', {
-            a: testData[0]
-          })
-      });
-      serviceStub.ngOnDestroy.and.callFake(()=>{
-        console.log('ALC. connect.and.callFake');
-        service.ngOnDestroy()
+  // This test runs synchronously.
+    it('getWebsocket', () => {
+      //alcwebsocketService.connect();
+      testScheduler.run(({ expectSubscriptions, hot, expectObservable }) => {
+        serviceStub.connect.and.callFake(()=>{
+          console.log('ALC. connect.and.callFake');
+          serviceStub.messages$ =
+            hot('a-^-a-a---a|', {
+              a: testData[0]
+            })
+        });
+        /*serviceStub.ngOnDestroy.and.callFake(()=>{
+          console.log('ALC. connect.and.callFake');
+          //serviceStub.ngOnDestroy()
+        });*/
+
+        serviceStub.connect();
+        expect(serviceStub.connect).toHaveBeenCalled();
+        const sub1 =              '--^-----------!';
+        const expect1 =           '--^-a-a---a|';
+        expectObservable(serviceStub.messages$, sub1).toBe(expect1,{
+          a: testData[0]
+        });
+        //serviceStub.ngOnDestroy();
       });
 
-      serviceStub.connect();
-      expect(serviceStub.connect).toHaveBeenCalled();
-      const sub1 =              '--^-----------!';
-      const expect1 =           '--^-a-a---a|';
-      expectObservable(service.messages$, sub1).toBe(expect1,{
-        a: testData[0]
-      });
-      serviceStub.ngOnDestroy();
     });
-
-  });
 });

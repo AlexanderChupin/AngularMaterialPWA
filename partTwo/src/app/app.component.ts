@@ -14,10 +14,13 @@ import Auth from "@aws-amplify/auth";
 import Storage from "@aws-amplify/storage";
 import { AlcwebsocketService } from './services/alcwebsocket.service';
 import { LoggerService as Logger } from './services/logger.service';
+import {AlcserverService,alcServerState} from "./services/alcserver.service";
+import {timer} from "rxjs";
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"]
+  styleUrls: ["./app.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
   title = "Material PWA";
@@ -57,6 +60,7 @@ export class AppComponent implements OnInit {
     media: MediaMatcher,
     public auth: AuthService,
     private toast: MatSnackBar,
+    public _alcserverService: AlcserverService
   ) {
     this.mobileQuery = media.matchMedia("(max-width: 600px)");
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
@@ -70,6 +74,12 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.detectIOS();
     this.checkSession();
+    this._alcserverService.stateForIcon.subscribe(v=>Logger.log('[app.comonent] stateForIcon =',v))
+    //timer(4000).subscribe(()=>this._alcserverService.setServerState(alcServerState.Up))
+  }
+
+  ngAfterViewInit(){
+
   }
 
   async checkSession() {

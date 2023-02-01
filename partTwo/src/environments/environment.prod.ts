@@ -14,6 +14,10 @@ export const environment = {
   msecDelay_gateway: 5000,
   intAttempts_gateway: 3,
   intRetries_gateway: 2,
+  msecDelay_websocket: 1000, //ALC. base delay between websocket connection requests
+  intAttempts_websocket: 3, //ALC. number of attempts for websocket reconnect
+  intRetries_websocket: 2, //ALC. number of retry series for for websocket reconnect before going to ping-pong timeout
+  ping_pong_websocket_timeout: 120000, //ALC. msec, ping-pong websocket requests
   //ALC. https://stackblitz.com/edit/angular-logger-service
-  LOG_LEVEL: 'DEBUG'
+  LOG_LEVEL: 'INFO'
 };

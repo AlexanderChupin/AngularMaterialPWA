@@ -1,4 +1,4 @@
-import {ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import { CountryCodeSelectComponent } from './country-code-select.component';
 import {MatBottomSheetRef} from "@angular/material/bottom-sheet";
@@ -15,8 +15,8 @@ describe('CountryCodeSelectComponent', () => {
   // javascript - NullInjectorError: No provider for MatBottomSheetRef - Stack Overflow https://stackoverflow.com/questions/57846500/nullinjectorerror-no-provider-for-matbottomsheetref
   let MatBottomSheetRefStub:Partial<MatBottomSheetRef> = {};
 
-  beforeEach((async() => {
-    await TestBed.configureTestingModule({
+  beforeEach(waitForAsync(/*async*/() => {
+    /*await*/ TestBed.configureTestingModule({
       // Angular - NG0302: Pipe not found! https://angular.io/errors/NG0302
       // Error: NG0302: The pipe 'filter' could not be found in the 'CountryCodeSelectComponent' component. Verify that it is declared or imported in this module. Find more at https://angular.io/errors/NG0302
       declarations: [ CountryCodeSelectComponent, FilterPipe ],

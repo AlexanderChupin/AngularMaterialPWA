@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import { IosInstallComponent } from './ios-install.component';
 import {MatSnackBarRef} from "@angular/material/snack-bar";
@@ -11,7 +11,7 @@ describe('IosInstallComponent', () => {
   // NullInjectorError: R3InjectorError(DynamicTestModule)[MatSnackBarRef -> MatSnackBarRef]: NullInjectorError: No provider for MatSnackBarRef!
   let MatSnackBarRefStub: Partial<MatSnackBarRef<any>> = {};
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ IosInstallComponent ],
       providers: [{provide:MatSnackBarRef, useValue: MatSnackBarRefStub}],

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { /*async,*/ ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import { SignInComponent } from './sign-in.component';
 import {NotificationService} from "../../services/notification.service";
@@ -34,7 +34,7 @@ describe('SignInComponent', () => {
   // javascript - NullInjectorError: No provider for MatBottomSheetRef - Stack Overflow https://stackoverflow.com/questions/57846500/nullinjectorerror-no-provider-for-matbottomsheetref
   let MatBottomSheetRefStub:Partial<MatBottomSheetRef> = {};
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SignInComponent ],
       providers: [

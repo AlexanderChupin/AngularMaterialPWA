@@ -1,6 +1,7 @@
 import { defineConfig } from "cypress";
 import * as webpack from '@cypress/webpack-preprocessor';
 import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor';
+import { environment } from 'src/environments/environment';
 
 async function setupNodeEvents(
   on: Cypress.PluginEvents,
@@ -53,7 +54,12 @@ export default defineConfig({
   e2e: {
     env: {
       "e2e_mail": process.env.E2E_MAIL,
-      "e2e_pass": process.env.E2E_PASS},
+      "e2e_pass": process.env.E2E_PASS,
+      "gwEndpoint_failing": "http://alexcloud.myqnapcloud.com:8081/alcwol.php", //ALC. HTTP must fail on HTTPS server
+      "gwEndpoint": environment.gwEndpoint,
+      "intAttempts_gateway":environment.intAttempts_gateway,
+      "intRetries_gateway": environment.intRetries_gateway,
+      "msecDelay_gateway": environment.msecDelay_gateway},
     baseUrl: "http://localhost:4200",
     specPattern: "**/*.feature",
     //supportFile: "./cypress/support/index.ts",

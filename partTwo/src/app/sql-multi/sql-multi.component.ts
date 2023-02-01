@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {SqlComponent} from "../sql/sql.component";
 import {AlcwebsocketService} from "../services/alcwebsocket.service";
 
 @Component({
   selector: 'app-sql-multi',
   templateUrl: './sql-multi.component.html',
-  styleUrls: ['./sql-multi.component.scss']
+  styleUrls: ['./sql-multi.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SqlMultiComponent implements OnInit {
 

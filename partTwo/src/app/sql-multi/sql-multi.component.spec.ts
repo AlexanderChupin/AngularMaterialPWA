@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import { SqlMultiComponent } from './sql-multi.component';
 import {SqlComponent} from "../sql/sql.component";
@@ -11,12 +11,14 @@ describe('SqlMultiComponent', () => {
   let component: SqlMultiComponent;
   let fixture: ComponentFixture<SqlMultiComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(waitForAsync(() => {
+    /*await*/ TestBed.configureTestingModule({
       declarations: [ SqlMultiComponent, MockSqlComponent],
     })
     .compileComponents();
+  }));
 
+  beforeEach(() => {
     fixture = TestBed.createComponent(SqlMultiComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

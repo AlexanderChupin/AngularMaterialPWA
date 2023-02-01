@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import { ConfirmCodeComponent } from './confirm-code.component';
 import {MatSnackBar, MatSnackBarRef} from "@angular/material/snack-bar";
 import {Overlay} from "@angular/cdk/overlay";
@@ -29,14 +29,16 @@ describe('ConfirmCodeComponent', () => {
   MatBottomSheetRefStub = {
   }
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(waitForAsync(/*async*/ () => {
+    /*await*/ TestBed.configureTestingModule({
       imports: [MaterialModule, BrowserAnimationsModule,FormsModule, ReactiveFormsModule,RouterTestingModule/*, Auth.configure(awsconfig)*/],
       providers: [MatSnackBar, Overlay, { provide: NotificationService, useValue: NotificationServiceStub },     { provide: MatBottomSheetRef, useValue: MatBottomSheetRefStub },
         { provide: MAT_BOTTOM_SHEET_DATA, useValue: {} }],
       declarations: [ConfirmCodeComponent],
     }).compileComponents();
+  }));
 
+  beforeEach(/*async*/ () => {
     fixture = TestBed.createComponent(ConfirmCodeComponent);
     fixture.detectChanges();
     component = fixture.debugElement.componentInstance;

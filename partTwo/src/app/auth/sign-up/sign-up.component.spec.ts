@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import { SignUpComponent } from './sign-up.component';
 import {MatBottomSheet, MatBottomSheetRef} from "@angular/material/bottom-sheet";
@@ -13,7 +13,7 @@ describe('SignUpComponent', () => {
   let fixture: ComponentFixture<SignUpComponent>;
   //NullInjectorError: R3InjectorError(DynamicTestModule)[MatBottomSheet -> MatBottomSheet]: NullInjectorError: No provider for MatBottomSheet!
   let MatBottomSheetStub:Partial<MatBottomSheet> = {};
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SignUpComponent ],
       providers: [{provide: MatBottomSheet, useValue: MatBottomSheetStub}],

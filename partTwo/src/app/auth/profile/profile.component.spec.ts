@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import { ProfileComponent } from './profile.component';
 import {MatSnackBar, MatSnackBarRef} from "@angular/material/snack-bar";
@@ -33,7 +33,7 @@ describe('ProfileComponent', () => {
     show(message: string = "Please wait..."): void {}
   };*/
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       //ERROR: 'NG0304: 'app-avatar' is not a known element (used in the 'ProfileComponent' component template):
       // 1. If 'app-avatar' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import { AuthComponent } from './auth.component';
 import {RouterTestingModule} from "@angular/router/testing";
@@ -7,8 +7,8 @@ describe('AuthComponent', () => {
   let component: AuthComponent;
   let fixture: ComponentFixture<AuthComponent>;
 
-  beforeEach((async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(waitForAsync (/*async*/ () => {
+    /*await*/ TestBed.configureTestingModule({
       imports: [RouterTestingModule/*RouterModule.forRoot([])*/],
       declarations: [ AuthComponent ]
     })

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import { LoaderComponent } from './loader.component';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
@@ -9,7 +9,7 @@ describe('LoaderComponent', () => {
   let fixture: ComponentFixture<LoaderComponent>;
   // NullInjectorError: R3InjectorError(DynamicTestModule)[InjectionToken MatDialogData -> InjectionToken MatDialogData]: NullInjectorError: No provider for InjectionToken MatDialogData!
   let MatDialogRefStub: Partial<MatDialogRef<any>> = {};
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ LoaderComponent ],
       imports: [MaterialModule],

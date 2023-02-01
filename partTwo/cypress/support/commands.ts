@@ -49,6 +49,7 @@
 ///<reference path="../global.d.ts" />
 Cypress.Commands.add(`login_route`, (email, pass, route) => {
   // cy.visit('auth/signin') /*get('a').contains(email + password).click()*/
+  cy.intercept(route).as('route')
   cy.visit(route)
     .get('input[formcontrolname=\"email\"]')
     .type(email)
@@ -57,4 +58,14 @@ Cypress.Commands.add(`login_route`, (email, pass, route) => {
     .get('button')
     .contains('Sign In')
     .click()
+    .intercept('POST',/.+cognito-identity.*/).as('authorization')
+    .wait('@authorization').then((interception) => {
+    cy.log(interception.response.body)
+    // @ts-ignore
+    cy.get('@authorization').should(({ request, response }) => {
+      expect(response.body).to.have.key('IdentityId');
+      console.log(response.body)
+    })
+  })
+    .url().should('contain', route)
 })

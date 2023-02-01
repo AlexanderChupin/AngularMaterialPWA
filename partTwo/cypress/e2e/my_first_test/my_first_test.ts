@@ -10,6 +10,6 @@ import { When, Then } from '@badeball/cypress-cucumber-preprocessor';
       .get('mat-toolbar.mat-toolbar')
       .should('be.visible')
       .should(
-      'have.text',
-      ' Material PWA account_circle')
+      'contain.text',
+      'Material PWA')
   });

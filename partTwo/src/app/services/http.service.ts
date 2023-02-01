@@ -34,7 +34,7 @@ export class HttpService {
   //Http Client get method
   public getWol(v:number): Observable<any> {
     let url: string = this.urlWol;
-    if (v<1) { url = 'http://alexcloud.myqnapcloud.com:8081/alcwol.php'}; //ALC. HTTP must fail on HTTPS server
+    //if (v<1) { url = 'http://alexcloud.myqnapcloud.com:8081/alcwol.php'}; //ALC. HTTP must fail on HTTPS server
     let obs: Observable<any> = this.http.get<any>(url,this.options);
     return obs;
   }

@@ -18,7 +18,7 @@ describe('AvatarComponent', () => {
       });
     }
   };
-  beforeEach(async(() => {
+  beforeEach(/*async*/(() => {
     TestBed.configureTestingModule({
       declarations: [ AvatarComponent ],
       providers: [{ provide: NotificationService, useValue: NotificationServiceStub }]

@@ -69,7 +69,10 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
   - Using marble diagrams in real application [How To Easily Write And Debug RxJS Marble Tests](https://mokkapps.de/blog/how-to-easily-write-and-debug-rxjs-marble-tests/)  
   - testing HTTP services [Angular \- Testing services](https://angular.io/guide/testing-services#testing-http-services)
 - Structured log of unit tests instead of the standard 'progress' [Karma \- Plugins](http://karma-runner.github.io/6.4/config/plugins.html)
-  - [karma\-spec\-reporter \- npm](https://www.npmjs.com/package/karma-spec-reporter)  
+  - [karma\-spec\-reporter \- npm](https://www.npmjs.com/package/karma-spec-reporter)
+- ALC. solved "An error was thrown in afterAll" [karma runner \- Angular 6 Unit Tests: An error was thrown in afterAll\
+  ReferenceError: Can't find variable: $ thrown \- Stack Overflow](https://stackoverflow.com/questions/51543241/angular-6-unit-tests-an-error-was-thrown-in-afterall-nreferenceerror-cant-fin)  
+- !!! ALC. useful testing scenarios, including marble tesing !!! [Angular \- Component testing scenarios](https://angular.io/guide/testing-components-scenarios) 
 
 ## ALC. Debugging Angular application
 - [Angular \| IntelliJ IDEA](https://www.jetbrains.com/help/idea/angular.html#angular_running_and_debugging)
@@ -111,6 +114,8 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - Working and tested cypress configuration [cypress\-cucumber\-preprocessor/cypress\.config\.ts at master · badeball/cypress\-cucumber\-preprocessor](https://github.com/badeball/cypress-cucumber-preprocessor/blob/master/examples/webpack-ts/cypress.config.ts)  
 - cypress configuration [Configuration \| Cypress Documentation](https://docs.cypress.io/guides/references/configuration#Configuration-File)
 - [cypress\-cucumber\-preprocessor/cucumber\-basics\.md at master · badeball/cypress\-cucumber\-preprocessor](https://github.com/badeball/cypress-cucumber-preprocessor/blob/master/docs/cucumber-basics.md)
+- ALC. deprecated but usefull introduction to the cypress-cucumber-preprocessor  [cypress\-cucumber\-preprocessor \- npm](https://www.npmjs.com/package/cypress-cucumber-preprocessor)
+- ALC tested. evaluating async network requests [Network Requests \| Cypress Documentation](https://docs.cypress.io/guides/guides/network-requests#Waiting)
 - run all e2e test from console. `npx cypress run --browser chrome --e2e --headed`
 - testing theory mutants. [Hunt The Bugs With Mutation Testing](https://www.sipios.com/blog-tech/hunt-the-bugs-with-mutation-testing)
 - not tested. types library cyrpess [@types/cypress\-cucumber\-preprocessor \- npm](https://www.npmjs.com/package/@types/cypress-cucumber-preprocessor)
@@ -144,6 +149,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
     - [@Injectable\(\)](https://angular.io/guide/dependency-injection)
     - [Angular \- Singleton services](https://angular.io/guide/singleton-services)
     - [Angular \- Providing dependencies in modules](https://angular.io/guide/providers)
+- ALC. Helpful. Subscribe vs async pipe. [The Ultimate Answer To The Very Common Angular Question: subscribe\(\) vs \| async Pipe \| by Tomas Trajan \| Angular In Depth \| Medium](https://medium.com/angular-in-depth/angular-question-rxjs-subscribe-vs-async-pipe-in-component-templates-c956c8c0c794)  
 
 ## Introducing InstanceIdService
 - Base article, but reworked on my own manner. [angular \- Is it possible to obtain an instance Id for a service? \- Stack Overflow](https://stackoverflow.com/questions/51602094/is-it-possible-to-obtain-an-instance-id-for-a-service)

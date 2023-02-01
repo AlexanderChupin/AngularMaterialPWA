@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  Input,
   OnInit,
   Output, SimpleChanges/*, ChangeDetectorRef*/
 } from '@angular/core';
@@ -14,19 +13,14 @@ import {
   map,
   catchError,
   tap,
-  switchAll,
   concatMap,
-  concatAll,
-  switchMap,
-  mergeAll,
   takeUntil,
-  startWith, filter, delay
 } from "rxjs/operators";
 import {AlcRxjsToolsService, intAttempts_gateway, intRetries_gateway, msecDelay_gateway} from "../services/alc-rxjs-tools.service";
 import {
   BehaviorSubject,
   EMPTY,
-  from,
+  from, interval,
   mergeMap,
   Observable,
   Observer,
@@ -52,7 +46,7 @@ import {isNumber} from "util";
 export class SqlComponent implements OnInit, AfterViewInit {
   // ALC. Very useful article on how to unsubscribe from subscriptions [6 Ways to Unsubscribe from Observables in Angular \| by Chidume Nnamdi 🔥💻🎵🎮 \| Bits and Pieces](https://blog.bitsrc.io/6-ways-to-unsubscribe-from-observables-in-angular-ab912819a78f)
   //ToDo add tslint rule for unsubscribe from all subsriptions
-  notifierUnsubscribeAll: Subject<null> = new Subject(); //common notifier to unsubscribe from all subscriptions
+  private _notifierUnsubscribeAll: Subject<null> = new Subject(); //common notifier to unsubscribe from all subscriptions
   notifierGW: Subject<null> = new Subject(); // specific notifier to complete GW Observable.
   matTooltipGW:string = "Switch GW On"
   color: ThemePalette = 'accent';
@@ -72,7 +66,7 @@ export class SqlComponent implements OnInit, AfterViewInit {
     public httpService: HttpService,
     private _websocket_service: AlcwebsocketService,
     private alcRxjsToolsService: AlcRxjsToolsService,
-    private _loader: LoaderService
+    private _loader: LoaderService,
   ) {
     // this.httpService.urlWol=gwEndpoint;
   }
@@ -83,6 +77,21 @@ export class SqlComponent implements OnInit, AfterViewInit {
 
   @Output()
   toggleChange: EventEmitter<void>
+
+  transactions$: Observable<string> = this._websocket_service.messages$.pipe(
+    /*map(rows =>
+      rows['data']
+    ),*/
+    map(data =>
+      JSON.stringify(data)
+    ),
+    tap({
+      next: v => Logger.log('[sql.component] transactions$ next = ', v),
+      error: error => Logger.warn('[sql.component] transactions$ error:', error),
+      complete: () => Logger.log('[sql.component] transactions$ complete')
+    }),
+    catchError(error => { throw error }),
+  );
   ngOnInit(): void {
     let a = 1;
     //this._websocket_service.instanceIdService=1;
@@ -90,36 +99,9 @@ export class SqlComponent implements OnInit, AfterViewInit {
     // this.getRetriesRXJS();
     // this.turnGwOff ();
     // this.systemMsg$.subscribe(this.obsrSystem) ;
+    Logger.log('[sql.component.ts] ngOnInit is called');
   }
-  transactions$ = this._websocket_service.messages$.pipe(
-    /*map(rows =>
-      rows['data']
-    ),*/
-    map(data =>
-      JSON.stringify(data)
-    ),
-    catchError(error => { throw error }),
-    tap({
-      error: error => Logger.warn('[SQL component] Error:', error),
-      complete: () => Logger.log('[SQL component] Connection Closed')
-    })
-  );
 
-  systemMsg$ = this._websocket_service.messages$.pipe(
-    tap({
-      next:v=>{
-        let a=1;
-      },
-      error:e=>{
-        let a=1;
-      },
-      complete:()=>{
-        let a=1;
-      }
-    })/*,
-    filter((v:any,i:number) => {
-      (typeof ({'system'} = v) === 'number')})*/
-  )
   /**
    * ALC. Observer to get system messages
    */
@@ -161,9 +143,13 @@ export class SqlComponent implements OnInit, AfterViewInit {
   };
 
   ngAfterViewInit() {
+    //Logger.log('[sql.component.ts] ngAfterViewInit is called');
     let a = 1;
     this.onTogleGwOn(new Event('test'));
-    this.connect();
+    // this.connect();
+    if (this._websocket_service.getState() !=='connected'){
+      this.connect();
+    }
   }
 
 
@@ -173,10 +159,6 @@ export class SqlComponent implements OnInit, AfterViewInit {
   }
   connect() {
     this._websocket_service.connect();
-  }
-
-  close() {
-    this._websocket_service.close();
   }
 
   reconnect() {
@@ -194,7 +176,7 @@ export class SqlComponent implements OnInit, AfterViewInit {
   // ALC. [RxJS \- retry](https://rxjs.dev/api/operators/retry)
   retriesGW: Observable<any> = this.alcRxjsToolsService.getObsRetries(msecDelay_gateway,intAttempts_gateway,intRetries_gateway).
   pipe(
-    takeUntil(this.notifierUnsubscribeAll),
+    takeUntil(this._notifierUnsubscribeAll),
     takeUntil(this.notifierGW),
     concatMap((v) => {
         let message = `ALC. attempt = ${v}`;
@@ -237,7 +219,10 @@ export class SqlComponent implements OnInit, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.notifierUnsubscribeAll.next(null);
-    this.notifierUnsubscribeAll.complete();
+    this._notifierUnsubscribeAll.next(null);
+    this._notifierUnsubscribeAll.complete();
+    Logger.log('[sql.component] is destroyed')
   }
 }
+
+

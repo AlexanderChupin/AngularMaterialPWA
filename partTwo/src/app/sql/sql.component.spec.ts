@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import { SqlComponent } from './sql.component';
 import {HttpClientModule} from "@angular/common/http";
@@ -13,8 +13,8 @@ describe('SqlComponent', () => {
   let fixture: ComponentFixture<SqlComponent>;
   let alcwebsocketService: AlcwebsocketService;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(waitForAsync( () => {
+    /*await*/ TestBed.configureTestingModule({
       declarations: [ SqlComponent ],
       // ALC. solving for: NullInjectorError: R3InjectorError(DynamicTestModule)[HttpService -> HttpClient -> HttpClient]:
       //   NullInjectorError: No provider for HttpClient!
@@ -25,11 +25,12 @@ describe('SqlComponent', () => {
       ]
     })
     .compileComponents();
+  }));
 
+  beforeEach( () => {
     fixture = TestBed.createComponent(SqlComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    // alcwebsocketService = TestBed.inject(AlcwebsocketService)
   });
 
   afterEach(() =>
