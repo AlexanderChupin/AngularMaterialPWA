@@ -11,6 +11,17 @@ export enum alcServerState {
   Stopping = 3
 }
 
+export enum AlcMessageType {
+  system = 0,
+  client = 1
+}
+
+export interface AlcMessage {
+  type: AlcMessageType,
+  source: string,
+  content: string;
+}
+
 const iconStateArray = [
   false,
   true,
