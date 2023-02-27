@@ -4,37 +4,26 @@ import {
   Component,
   EventEmitter,
   OnInit,
-  Output, SimpleChanges/*, ChangeDetectorRef*/
+  Output,
+  SimpleChanges
 } from '@angular/core';
 import {ThemePalette} from "@angular/material/core";
-import {HttpService, gwEndpoint} from "../services/http.service";
-import { AlcwebsocketService } from '../services/alcwebsocket.service';
+import {HttpService} from "../services/http.service";
+import {AlcMessage, AlcMessageType, AlcwebsocketService, LoggerService} from '../services/alcwebsocket.service';
+import {scan, catchError, concatMap, map, takeUntil, tap,filter} from "rxjs/operators";
 import {
-  map,
-  catchError,
-  tap,
-  concatMap,
-  takeUntil,
-} from "rxjs/operators";
-import {AlcRxjsToolsService, intAttempts_gateway, intRetries_gateway, msecDelay_gateway} from "../services/alc-rxjs-tools.service";
-import {
-  BehaviorSubject,
-  EMPTY,
-  from, interval,
-  mergeMap,
-  Observable,
-  Observer,
-  of,
-  retry,
-  Subject,
-  Subscription,
-  throwError
-} from "rxjs";
+  AlcRxjsToolsService,
+  intAttempts_gateway,
+  intRetries_gateway,
+  msecDelay_gateway
+} from "../services/alc-rxjs-tools.service";
+import {BehaviorSubject, Observable, Observer, of, Subject} from "rxjs";
 // import {InstanceIdService} from "../services/instance-id.service";
 import {LoggerService as Logger} from '../services/logger.service'
-import {pipeline} from "stream";
 import {LoaderService} from "../loader/loader.service";
-import {isNumber} from "util";
+import {AlcserverService} from "../services/alcserver.service";
+import {NgForm} from "@angular/forms";
+
 @Component({
   selector: 'app-sql',
   templateUrl: './sql.component.html',
@@ -58,15 +47,18 @@ export class SqlComponent implements OnInit, AfterViewInit {
   content = '';
   received = [];
   sent = [];
+  // private _wsClientId: number = null;
   public webSocketServiceId: number;
   gwText$: BehaviorSubject<string> = new BehaviorSubject('ALC. retry connection');
   // @Input() gwText$: string = 'ALC. retry connection';
+
   private static _spinnerTimeout: number = 700; //ALC. Spinner minimum timeout to make it visible to human
   constructor(
     public httpService: HttpService,
     private _websocket_service: AlcwebsocketService,
     private alcRxjsToolsService: AlcRxjsToolsService,
     private _loader: LoaderService,
+    public _alcserver: AlcserverService,
   ) {
     // this.httpService.urlWol=gwEndpoint;
   }
@@ -92,6 +84,13 @@ export class SqlComponent implements OnInit, AfterViewInit {
     }),
     catchError(error => { throw error }),
   );
+
+  //ALC. accumulate received messaged. [How to append new line of text to a text area in Angular 2 \- Stack Overflow](https://stackoverflow.com/questions/56214301/how-to-append-new-line-of-text-to-a-text-area-in-angular-2)
+  transactions_received$: Observable<string> = this.transactions$.pipe(
+    map(v=>LoggerService.getLogDate()+v),
+    scan((acc, v) => v + "\n" + acc),
+  );
+
   ngOnInit(): void {
     let a = 1;
     //this._websocket_service.instanceIdService=1;
@@ -154,8 +153,16 @@ export class SqlComponent implements OnInit, AfterViewInit {
 
 
   //transactions$ = this.service.messages$;
-  sendMsg (){
-    this._websocket_service.sendMessage(this.content);
+  sendMsg (form: NgForm){
+    const post = {
+      content: form.value.content
+    };
+    let msg : AlcMessage = {
+      'type': AlcMessageType.client,
+      'source': this._websocket_service.getWsClientId(),
+      'body':{"message":post.content}
+    }
+    this._websocket_service.sendMessage(msg);
   }
   connect() {
     this._websocket_service.wsReset();

@@ -27,59 +27,81 @@
         Angular + WebSockets
       </h1>
     </section>
-      <h3>
-        WebSocket service Id <br>
-        <button mat-mini-fab matTooltip="Primary" color="primary" aria-label="Example mini fab with a heart icon">
+    <h3>
+      WebSocket service
+    </h3>
+    <section class="example-section">
+      <div class="boxes">
+        <div class="box"><div>Service Id</div><button  mat-mini-fab matTooltip="Websocket service id. Must be 0 always" color="primary" aria-label="Example mini fab with a heart icon">
           <!--<mat-icon>favorite</mat-icon>-->
           {{webSocketServiceId}}
         </button>
-        <button mat-mini-fab matTooltip="Primary" color="primary" aria-label="Example mini fab with a heart icon" (click)="onConnect($event)">
-          <!--<mat-icon>favorite</mat-icon>-->
-          connect()
-        </button>
-        <button mat-mini-fab matTooltip="Primary" color="primary" aria-label="Example mini fab with a heart icon" (click)="onRecycle($event)">
-          <!--<mat-icon>favorite</mat-icon>-->
-          recycle
-        </button>
-      </h3>
-      <br>
-      <div class="row">
-        <div class="column">
-          <textarea [(ngModel)]="content" name="contentInput" cols="40" rows="5"></textarea>
-          <br>
-          <button (click)="sendMsg()">Send Message</button>
         </div>
-
-      </div>
-
-      <br>
-      <div>
-        <h1>Sent Messages</h1>
-        <br>
-        <ul>
-          <!--<li *ngFor="let item of sent">Source: {{item.source}} -> Content {{item.content}}</li>-->
-        </ul>
-      </div>
-
-      <br>
-      <div>
-        <h1>Received Messages</h1>
-        <!--<ul>
-          <li *ngFor="let transaction of transactions$ | async">{{ transaction }}</li>
-        </ul>-->
-        <div>
-          <!--<ng-container
-            *ngIf="(transactions$ | async)">
-            TEST!!!
-          </ng-container>-->
-          {{ transactions$ | async }}
+        <div class="box"><div>Client Id</div><button  mat-mini-fab matTooltip="Click to reconnect and get new client id" color="primary" aria-label="Example mini fab with a heart icon" (click)="onConnect($event)">
+          <!--<mat-icon>favorite</mat-icon>-->
+          {{ _alcserver.wsClientId$ | async}}
+        </button>
         </div>
-        <!--<p-table [value]="transactions$ | async">-->
-        <br>
-        <ul>
-          <!--<li *ngFor="let item of received">Source: {{item.source}} -> Content {{item.content}}</li>-->
-        </ul>
+        <div class="box"><div>Ping Id</div><button   mat-mini-fab matTooltip="Click to reconnect cycle and get new client id" color="primary" aria-label="Example mini fab with a heart icon" (click)="onRecycle($event)">
+          <!--<mat-icon>favorite</mat-icon>-->
+          {{ _alcserver.wsPongId$ | async}}
+        </button>
+        </div>
       </div>
+    </section>
+    <div class="row">
+      <div class="column">
+        <!--<textarea [(ngModel)]="content" name="contentInput" cols="40" rows="5"></textarea>
+        <br>-->
+
+        <form class="example-form" (submit) = "sendMsg(postForm)" #postForm = "ngForm" >
+          <mat-form-field class="example-full-width">
+            <!--<mat-label>Message</mat-label>-->
+            <!--<input matInput [(ngModel)]="content" #message maxlength="256" placeholder="message to all clients">-->
+            <textarea matInput name="content" #message maxlength="256" placeholder="Мessage to all clients..." ngModel></textarea>
+            <mat-hint align="start"><strong>Don't disclose personal info</strong> </mat-hint>
+            <mat-hint align="end">{{message.value.length}} / 256</mat-hint>
+          </mat-form-field>
+          <button
+            mat-raised-button
+            color = "primary"
+            type = "submit">Send message
+          </button>
+        </form>
+        <!--<button (click)="sendMsg()">Send Message</button>-->
+
+      </div>
+
+    </div>
+
+    <br>
+    <div>
+      <h1>Sent Messages</h1>
+      <br>
+      <ul>
+        <!--<li *ngFor="let item of sent">Source: {{item.source}} -> Content {{item.content}}</li>-->
+      </ul>
+    </div>
+
+    <br>
+    <div>
+      <h1>Received Messages</h1>
+      <!--<ul>
+        <li *ngFor="let transaction of transactions$ | async">{{ transaction }}</li>
+      </ul>-->
+      <div>
+        <!--<ng-container
+          *ngIf="(transactions$ | async)">
+          TEST!!!
+        </ng-container>-->
+      </div>
+      <textarea id="w3review" name="w3review" rows="10" cols="80">{{ transactions_received$ | async }}</textarea>
+      <!--<p-table [value]="transactions$ | async">-->
+      <br>
+      <ul>
+        <!--<li *ngFor="let item of received">Source: {{item.source}} -> Content {{item.content}}</li>-->
+      </ul>
+    </div>
 
   </mat-card-content>
 </mat-card>

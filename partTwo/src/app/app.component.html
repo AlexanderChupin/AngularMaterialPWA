@@ -30,7 +30,7 @@
         {{title}}
         <div class="fill-space"></div>
         <div class="server-status-container">
-          <button mat-fab color="primary" aria-label="Server state" [disabled]="!(_alcserverService.stateForIcon| async)">
+          <button mat-fab [color]="(_alcserverService.stateForIcon| async)" aria-label="Server state" routerLink="manage/sql" data-cy="Server state"> <!--[disabled]="!(_alcserverService.stateForIcon| async)"-->
             <mat-icon>wifi</mat-icon>
           </button>
         </div>

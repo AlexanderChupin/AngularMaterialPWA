@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AlcwebsocketService } from './alcwebsocket.service';
+import {AlcMessage, AlcMessageType, AlcwebsocketService} from './alcwebsocket.service';
 import {InstanceIdService} from "./instance-id.service";
 import { TestScheduler } from 'rxjs/testing';
 import { rxSandbox } from 'rx-sandbox';
@@ -31,8 +31,8 @@ describe('AlcwebsocketService', () => {
 
   // ALC. see [How To Easily Write And Debug RxJS Marble Tests](https://mokkapps.de/blog/how-to-easily-write-and-debug-rxjs-marble-tests/)
   // we mock the API alcwebsocketService and return mocked observables which are created by marble strings
-  const testData=[
-    {type:"system", message:83}
+  const testData : Array<AlcMessage> =[
+    {type:AlcMessageType.system, source:0, body:{}}
   ]
   const fake_alcwebsocketService = jasmine.createSpyObj('AlcwebsocketService', [
     'getNewWebSocket',

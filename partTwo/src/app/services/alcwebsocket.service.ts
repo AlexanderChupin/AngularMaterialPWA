@@ -17,7 +17,7 @@ import {
   catchError,
   delay,
   takeUntil,
-  concatMap, switchMap
+  concatMap, switchMap, filter
 } from 'rxjs/operators';
 import {InstanceIdService} from "./instance-id.service";
 import {LoggerService as Logger} from "./logger.service";
@@ -35,6 +35,22 @@ export enum webSocketState {
   websocket_created= 2,
 }
 
+export enum AlcMessageType {
+  system = 0, //used internally to handle statuses, ping-pong
+  client = 1 //used for business logic
+}
+
+/**
+ * message mandatory fields
+ * @source - client number, 0 for server
+ * @body - json object
+ */
+export interface AlcMessage {
+  type: AlcMessageType,
+  source: number,
+  body: object;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -45,8 +61,8 @@ export class AlcwebsocketService implements OnDestroy {
   // ALC. direct _socket$ processor with connection retry logic
   private _messages: Observable<any>;
   private _messagesSubject$ = new Subject();
-  // ALC. subject!!! required to keep permanent connection ot different component. Emiting content messages to content subscribers
-  public messages$: Subject<any> = new Subject<any>()
+  // ALC. subject!!! required to keep permanent connection of different components. Emitting content messages to content subscribers
+  public messages$: Subject<AlcMessage> = new Subject<AlcMessage>()
   // ALC. observable to switch for new websocket stream after reconnect
   private _messagesSwitched: Observable<any> = this._messagesSubject$.pipe(
     switchAll(),
@@ -55,10 +71,16 @@ export class AlcwebsocketService implements OnDestroy {
     })
   );
 
+  //ALC. required for mocking in tests
+  public setMessages$(subj:Subject<AlcMessage>){
+    this.messages$ = subj;
+  }
+
   /**
    * ALC filtered system messages from websocket
    */
-  systemMsg$ = this._messagesSwitched.pipe(
+  systemMsg$ : Observable<AlcMessage> = this.messages$.pipe(
+    filter(v=>v.type==AlcMessageType.system),
     tap({
       next: v => {
         let a = 1;
@@ -76,6 +98,9 @@ export class AlcwebsocketService implements OnDestroy {
   private _alcInstId: number;
   //ALC. connection state. Only for debugging purpose
   private _state: string = 'disconnected';
+  private _wsClientId: number = null;
+  getWsClientId = () : number => this._wsClientId;
+  setWsClientId = (v: number) : void => {this._wsClientId=v};
   /**
    * ALC. public informer on _state update
    */
@@ -94,6 +119,7 @@ export class AlcwebsocketService implements OnDestroy {
    */
   private _reconnectCounterComplete$: Subject<any> = new Subject<any>();
   private _subsMessagesSwitched: Subscription;
+  private _subsSystemMsg$: Subscription;
 
   constructor(
     private instanceIdService: InstanceIdService,
@@ -168,9 +194,13 @@ export class AlcwebsocketService implements OnDestroy {
    */
   private _obsrPingFromRecycle = (v): void => {
     if (this._state == 'connected') {
-      let jsonString = JSON.stringify({'type': 'system', 'ping': v})
+      let msg : AlcMessage = {
+        'type': AlcMessageType.system,
+        'source':this.getWsClientId(),
+        'body': {'ping':v}
+      };
       //let jsonString = 'ping';
-      this.sendMessage(jsonString);
+      this.sendMessage(msg);
       return;
     }
     this.connect()
@@ -231,9 +261,9 @@ export class AlcwebsocketService implements OnDestroy {
     this._socket$ = undefined;
   }
 
-  sendMessage(msg: any) {
-    const tmp = {"data": msg};
-    this._socket$.next(tmp);
+  sendMessage(msg: AlcMessage) {
+    // const tmp = {"data": msg};
+    this._socket$.next(msg);
   }
 
   getInstanceId(): number {
@@ -308,7 +338,13 @@ export class AlcwebsocketService implements OnDestroy {
     //ALC. always wait for new reconnection cycle or ping-pong. Subscribe once during the service init
     this._recycleFromClick$.subscribe(this._obsrRecycleFromClick);
     this._pingFromRecycle.subscribe(this._obsrPingFromRecycle);
-    this._subsMessagesSwitched= this._messagesSwitched.subscribe((v: any) => this.messages$.next(v));
+    this._subsMessagesSwitched = this._messagesSwitched.subscribe((v: any) => this.messages$.next(v));
+    this._subsSystemMsg$ = this.systemMsg$.subscribe((v:any)=>{
+      if (v.type == AlcMessageType.system && v.body && v.body.clientId){
+        this._wsClientId = v.body.clientId;
+      }
+      Logger.log('[alcserver.service] websocket system message =',v)
+    });
     this.onRecycle();
   }
 

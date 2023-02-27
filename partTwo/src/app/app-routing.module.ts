@@ -11,6 +11,7 @@ import { UnauthGuard } from './auth/unauth.guard';
 import {SqlComponent} from "./sql/sql.component";
 import {SqlMultiComponent} from "./sql-multi/sql-multi.component";
 import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
+//import { Router } from '@angular/router';
 
 const routes: Routes = [
   { path: 'auth', component: AuthComponent, children: [

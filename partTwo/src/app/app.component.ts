@@ -123,4 +123,8 @@ export class AppComponent implements OnInit {
       nav.toggle();
     }
   }
+
+  /*btnClick = ()=> {
+    this.router.navigateByUrl('/user');
+  }*/
 }

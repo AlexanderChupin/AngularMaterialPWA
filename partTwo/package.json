@@ -46,7 +46,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^18.11.18",
     "codelyzer": "^0.0.28",
-    "cypress": "^12.3.0",
+    "cypress": "^12.7.0",
     "http-server": "^13.0.1",
     "jasmine-core": "~4.4.0",
     "jasmine-spec-reporter": "~7.0.0",
@@ -72,5 +72,6 @@
       "cypress/e2e/[filepath]/**/*.{js,ts}",
       "cypress/e2e/[filepath].{js,ts}",
       "cypress/support/step_definitions/**/*.{js,ts}"
-    ]}
+    ]
+  }
 }

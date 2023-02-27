@@ -12,3 +12,37 @@
 .example-margin {
   margin: 10px;
 }
+
+section {
+  display: table;
+}
+.example-button-row {
+  display: table-cell;
+  max-width: 200px;
+}
+.example-label {
+  display: table-cell;
+  font-size: 14px;
+  margin-left: 8px;
+  min-width: 120px;
+}
+
+.example-button {
+  display: table-cell;
+  font-size: 14px;
+  margin-left: 50px;
+}
+
+.boxes {
+  display:table;
+  width: 50%;
+  height: 20px;
+}
+
+.box {
+  display: table-cell;
+  text-align: left;
+  vertical-align:middle;
+  line-height: 2;
+  margin-left: 50px;
+}

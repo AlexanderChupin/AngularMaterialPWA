@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {Subject} from "rxjs";
-import {map} from "rxjs/operators";
-import {AlcwebsocketService, webSocketState} from "./alcwebsocket.service";
+import {Observable, Subject, ReplaySubject} from "rxjs";
+import {filter, map} from "rxjs/operators";
+import {AlcMessage, AlcwebsocketService, webSocketState} from "./alcwebsocket.service";
 import {LoggerService as Logger} from '../services/logger.service'
 
 export enum alcServerState {
@@ -11,22 +11,11 @@ export enum alcServerState {
   Stopping = 3
 }
 
-export enum AlcMessageType {
-  system = 0,
-  client = 1
-}
-
-export interface AlcMessage {
-  type: AlcMessageType,
-  source: string,
-  content: string;
-}
-
 const iconStateArray = [
-  false,
-  true,
-  true,
-  false
+  "warn",
+  "primary",
+  "warn",
+  "warn"
 ]
 
 
@@ -37,18 +26,40 @@ const iconStateArray = [
 export class AlcserverService{
   private _state: alcServerState = alcServerState.Down;
   public serverState$: Subject<alcServerState> = new Subject();
+  /**
+   * ALC. Producer of websocket client Id
+   * @private
+   */
+  private _wsClientIdObservable : Observable<string> = this._websocket_service.systemMsg$.pipe(
+    filter(v=>v.body["clientId"] && (v.source == 0)),
+    map(v=>v.body["clientId"].toString())
+  );
+  /**
+   * ALC. The subject to subscribe for websocket client Id
+   */
+  public wsClientId$: ReplaySubject<string> = new ReplaySubject<string>(1);
+
+  /**
+   * ALC. Producer of websocket pong Id
+   * @private
+   */
+  private _wsPongObservable : Observable<number> = this._websocket_service.systemMsg$.pipe(
+    filter(v=>v.body["pong"] ),
+    map(v=>v.body["pong"])
+  );
+
+  /**
+   * ALC. The subject to subscribe for websocket pong Id
+   */
+  public wsPongId$: ReplaySubject<number> = new ReplaySubject<number>(1);
 
   constructor(
     private _websocket_service: AlcwebsocketService
   ) {
-    Logger.log('[alcserver.service] _websocket_service.getInstanceId()=',this._websocket_service.getInstanceId());
-    Logger.log('[alcserver.service] _websocket_service.getState()=',this._websocket_service.getState())
-    /*if (this._websocket_service.getState() !=='connected')
-    {
-      this._websocket_service.connect()
-    }*/
-    this._websocket_service.systemMsg$.subscribe((v:any)=>Logger.log('[alcserver.service] websocket system message =',v));
-    this._websocket_service._state$.subscribe((v)=>{
+    Logger.log('[alcserver.service] _websocket_service.getInstanceId()=', this._websocket_service.getInstanceId());
+    Logger.log('[alcserver.service] _websocket_service.getState()=', this._websocket_service.getState())
+    //ALC. subsribe to websocket state updates
+    this._websocket_service._state$.subscribe((v) => {
       Logger.log('[alcserver.service] _websocket_service._state$ received', v)
       let state: alcServerState;
       switch (v) {
@@ -60,7 +71,32 @@ export class AlcserverService{
           break;
       }
     })
+    //ALC.subsribe to websocket server sleep/resume events
+    this._websocket_service.systemMsg$.subscribe((v) => {
+      Logger.log('[alcserver.service] _websocket_service.systemMsg$ reveived', v);
+      if (v.body && v.body["message"] && (typeof v.body["message"] == "string")) {
+        const pattern = /^sleep=(sleep|resume)/i;
+        let match = v.body["message"].match(pattern)?v.body["message"].match(pattern)[1]:"NONE"
+        switch (match.toUpperCase()) {
+          case "SLEEP":
+            this.setServerState(alcServerState.Down);
+            break;
+          case "RESUME" :
+            this.setServerState(alcServerState.Up);
+            break;
+        }
+      }
+      if (v.body && v.body["pong"]) {
+        this.setServerState(alcServerState.Up);
+      }
+    })
+    //ALC. subscribe to wsClientId updates
+    this._wsClientIdObservable.subscribe((v:string)=>this.wsClientId$.next(v));
+
+    //ALC. subscribe to wsClientId pong events
+    this._wsPongObservable.subscribe((v:number)=>this.wsPongId$.next(v));
   }
+
 
   public setServerState = (state:alcServerState):void=>{
     this._state=state

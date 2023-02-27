@@ -48,19 +48,24 @@ export class LoggerService {
       }
     }
   }
-
+  // ALC. [text formatting \- How to output numbers with leading zeros in JavaScript? \- Stack Overflow](https://stackoverflow.com/questions/2998784/how-to-output-numbers-with-leading-zeros-in-javascript)
+  static _pad(num, size) {
+    num = num.toString();
+    while (num.length < size) num = "0" + num;
+    return num;
+  }
   /**
    * To add the date on logs.
    */
-  private static getLogDate(): string {
+  static getLogDate(): string {
     const date = new Date();
     return '[' +
-      date.getUTCFullYear() + '/' +
-      (date.getUTCMonth() + 1) + '/' +
-      date.getUTCDate() + ' ' +
-      date.getUTCHours() + ':' +
-      date.getUTCMinutes() + ':' +
-      date.getUTCSeconds() + '.' +
-      date.getMilliseconds() + ']';
+      date.getFullYear() + '-' +
+      this._pad(date.getMonth() + 1, 2) + '-' +
+      this._pad(date.getDate(),2) + ' ' +
+      this._pad(date.getHours(),2) + ':' +
+      this._pad(date.getMinutes(),2) + ':' +
+      this._pad(date.getSeconds(),2) + '.' +
+      this._pad(date.getMilliseconds(),3) + ']';
   }
 }

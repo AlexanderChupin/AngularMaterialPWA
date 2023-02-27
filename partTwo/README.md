@@ -168,3 +168,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - press any key... [keypress \- execute function on any key press angular \- Stack Overflow](https://stackoverflow.com/questions/54876160/execute-function-on-any-key-press-angular)
 - ALC. selected template for the page design [\#8 Bluescreen \- 404 Page](https://dev.to/webdeasy/25-creative-404-error-pages-with-cool-animations-16jn)
 - forwarding unknown routes to the 404 page. [Angular \- Common Routing Tasks](https://angular.io/guide/router#setting-up-wildcard-routes)
+
+## ALC. Learning Material
+  - ALC tested. Submitting form controls [Using Forms in Mean Stack \- javatpoint](https://www.javatpoint.com/using-forms-in-mean-stack)
+  - ALC tested. CSS styles for tables. [Антигерой CSS\-разметки — свойство «display: table» — Блог HTML Academy](https://htmlacademy.ru/blog/css/display-table-anti-hero)

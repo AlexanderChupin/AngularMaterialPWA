@@ -9,7 +9,17 @@ When(/^User opens the home page$/, function () {
   // return "pending";
 });
 
-Then(/^Server status is visible$/, function () {
-  expect(1).to.equal(1);
+Then(/^Server status is not disabled$/, function () {
+  cy.get('[data-cy="Server state"]')
+    .should('exist')
+    .should('not.have.attr', 'disabled');
+  // expect(1).to.equal(1);
+  //return "pending";
+});
+
+Then(/^Server status is primary color$/, function () {
+  cy.get('[data-cy="Server state"]')
+    .should('have.attr', 'ng-reflect-color', 'primary');
+  // expect(1).to.equal(1);
   //return "pending";
 });
