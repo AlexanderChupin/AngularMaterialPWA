@@ -22,9 +22,11 @@ When('I visit the Manage SQL page', function () {
 
 Then('I should see "SQL state" control', function (expectedText) {
   // cy.contains(expectedText).should('be.visible')
+  cy.get('mat-drawer-content').scrollTo("top")
   cy
     //<mat-toolbar _ngcontent-sql-c69="" color="primary" class="mat-toolbar toolbar mat-primary mat-toolbar-single-row"><!----> Material PWA <div _ngcontent-sql-c69="" class="fill-space"></div><a _ngcontent-sql-c69="" mat-icon-button="" routerlink="auth/signup" class="mat-focus-indicator mat-icon-button mat-button-base" aria-disabled="false" href="/auth/signup"><span class="mat-button-wrapper"><mat-icon _ngcontent-sql-c69="" role="img" class="mat-icon notranslate material-icons mat-ligature-font mat-icon-no-color ng-star-inserted" aria-hidden="true" data-mat-icon-type="font">account_circle</mat-icon><!----><!----></span><span matripple="" class="mat-ripple mat-button-ripple mat-button-ripple-round"></span><span class="mat-button-focus-overlay"></span></a></mat-toolbar>
-    .get('mat-slide-toggle.mat-slide-toggle')
+    //.get('mat-slide-toggle.mat-slide-toggle')
+    .get('[data-cy="GwToggle"]')
     .should('be.visible')
     .should(
       'contain.text',
@@ -57,10 +59,12 @@ Then('gwEndpoint should be called with the correct response', function (expected
 });
 
 Then('I should see connection success', function (expectedText) {
+  cy.get('mat-drawer-content').scrollTo("top")
   // ALC. see [Network Requests \| Cypress Documentation](https://docs.cypress.io/guides/guides/network-requests#Waiting)
   cy
     //<mat-toolbar _ngcontent-sql-c69="" color="primary" class="mat-toolbar toolbar mat-primary mat-toolbar-single-row"><!----> Material PWA <div _ngcontent-sql-c69="" class="fill-space"></div><a _ngcontent-sql-c69="" mat-icon-button="" routerlink="auth/signup" class="mat-focus-indicator mat-icon-button mat-button-base" aria-disabled="false" href="/auth/signup"><span class="mat-button-wrapper"><mat-icon _ngcontent-sql-c69="" role="img" class="mat-icon notranslate material-icons mat-ligature-font mat-icon-no-color ng-star-inserted" aria-hidden="true" data-mat-icon-type="font">account_circle</mat-icon><!----><!----></span><span matripple="" class="mat-ripple mat-button-ripple mat-button-ripple-round"></span><span class="mat-button-focus-overlay"></span></a></mat-toolbar>
-    .get('mat-slide-toggle.mat-slide-toggle')
+    // .get('mat-slide-toggle.mat-slide-toggle')
+    .get('[data-cy="GwToggle"]')
     .should('be.visible')
     .should(
       'contain.text',
@@ -73,6 +77,7 @@ When('GW is not responding', function () {
 });
 
 Then('gwEndpoint should be called with the error response', function (expectedText) {
+  cy.get('mat-drawer-content').scrollTo("top")
   // ToDo. Try using fake url to real server by setting wrong GWendpoint. See [Accessing angular components methods from within Cypress \- DEV Community 👩‍💻👨‍💻](https://dev.to/julianobrasil/accessing-angular-components-methods-from-within-cypress-4imf)
   // ALC. see [Network Requests \| Cypress Documentation](https://docs.cypress.io/guides/guides/network-requests#Waiting)
   const staticResponse = {
@@ -89,7 +94,8 @@ Then('gwEndpoint should be called with the error response', function (expectedTe
   }
   cy.wrap(retries).each((num, i, array) => {
     cy.wait('@gwEndpointRequest',  { timeout: Cypress.env("reconnectInterval")*2 })
-      .get('mat-slide-toggle.mat-slide-toggle')
+      //.get('mat-slide-toggle.mat-slide-toggle')
+      .get('[data-cy="GwToggle"]')
       .should('be.visible')
       .should(
         'contain.text',
@@ -98,6 +104,7 @@ Then('gwEndpoint should be called with the error response', function (expectedTe
 
   cy.wait('@gwEndpointRequest',  { timeout: Cypress.env("msecDelay_gateway")*2})
     .get('mat-slide-toggle.mat-slide-toggle')
+    // .get('[data-cy="GwToggle"]')
     .should('be.visible')
     .should(
       'contain.text',

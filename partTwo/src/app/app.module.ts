@@ -28,6 +28,7 @@ import {InstanceIdService} from "./services/instance-id.service";
 import {AlcRxjsToolsService} from './services/alc-rxjs-tools.service'
 import {LoggerService} from './services/logger.service';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component'
+import { AmplifyAuthenticatorModule } from '@aws-amplify/ui-angular';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     FormsModule,
     ReactiveFormsModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-    HttpClientModule
+    HttpClientModule,
+    AmplifyAuthenticatorModule
   ],
   providers: [AuthService, AlcwebsocketService, InstanceIdService, AlcRxjsToolsService, LoggerService],
   bootstrap: [AppComponent],

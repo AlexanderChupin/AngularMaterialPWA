@@ -83,6 +83,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## ALC. Learning Amplify
 - [Quickstart. Amplify toolchain](https://kaustavghosh06.github.io/docs/cli-toolchain/quickstart)
+- Authentication forms for Angular V2 [Authenticator \| Amplify UI for Angular](https://ui.docs.amplify.aws/angular/connected-components/authenticator)
 
 ## ALC. Resolving errors and IDE upgrade
 - Warning: 'C:\Users\AChupin\PhpstormProjects\AngularMaterialPWA\partTwo\src\styles.scss' imports '~@angular/material/theming' with a tilde. Usage of '~' in imports is deprecated. [Sass @use / @import statements without tilde aren't being resolved correctly : WEB\-53120](https://youtrack.jetbrains.com/issue/WEB-53120/Sass-use-import-statements-without-tilde-arent-being-resolved-correctly)

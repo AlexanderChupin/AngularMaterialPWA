@@ -14,7 +14,8 @@
         [disabled]="disabled"
         (toggleChange)="onTogleGwOn($event)"
         matTooltip={{matTooltipGW}}
-        matTooltipPosition="above">
+        matTooltipPosition="above"
+        data-cy="GwToggle">
         {{gwText$ | async}}
         <!--{{gwText$}}-->
       </mat-slide-toggle>
