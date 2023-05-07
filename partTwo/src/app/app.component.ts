@@ -16,6 +16,9 @@ import { AlcwebsocketService } from './services/alcwebsocket.service';
 import { LoggerService as Logger } from './services/logger.service';
 import {AlcserverService,alcServerState} from "./services/alcserver.service";
 import {timer} from "rxjs";
+import {SwPush} from '@angular/service-worker';
+import { environment } from '../environments/environment';
+
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
@@ -60,7 +63,8 @@ export class AppComponent implements OnInit {
     media: MediaMatcher,
     public auth: AuthService,
     private toast: MatSnackBar,
-    public _alcserverService: AlcserverService
+    public _alcserverService: AlcserverService,
+    readonly swPush: SwPush
   ) {
     this.mobileQuery = media.matchMedia("(max-width: 600px)");
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
@@ -78,9 +82,33 @@ export class AppComponent implements OnInit {
     //timer(4000).subscribe(()=>this._alcserverService.setServerState(alcServerState.Up))
   }
 
-  ngAfterViewInit(){
-
+  public subscribeToPush() {
+      const PUBLIC_VAPID_KEY_OF_SERVER = environment.VAPID.publicKey;
+      const sub = this.swPush.requestSubscription({
+        serverPublicKey: PUBLIC_VAPID_KEY_OF_SERVER,
+      }).
+      then(data => {
+        console.info('[ALC app.component] subscribeToPush subscribed result=', data.toJSON());
+      }).
+      catch(err =>
+        console.error("[ALC app.component] subscribeToPush Could not subscribe to notifications", err)
+      );
   }
+
+  public subscribeToNotificationClicks() {
+    if (this.swPush.isEnabled) {
+      console.info('[ALC app.component] notificationClicks going to subscribe')
+      this.swPush.notificationClicks.subscribe(
+        ({action, notification}) => {
+          // TODO: Do something in response to notification click.
+          console.info('[ALC app.component] notificationClicks action received =', action)
+          alert('ALC. '+action);
+        });
+      console.info('[ALC app.component] this.swPush.notificationClicks=',this.swPush.notificationClicks);
+    }
+  }
+  ngAfterViewInit(){
+      }
 
   async checkSession() {
     try {

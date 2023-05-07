@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng build --configuration=production && http-server ./dist/AngularPwaPostOne",
+    "start": "ng build --configuration=production && http-server ./dist",
     "build": "ng build --configuration=production",
     "serve": "ng serve --configuration=development",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "e2ecypress": "npx cypress run --browser  chrome --e2e --headed",
-    "cypressGUI": "npx cypress open"
+    "cypressGUI": "npx cypress open",
+    "ngsw:rebuild": "ngsw-config dist ngsw-config.json && copy dist/ngsw.json src/ngsw.json"
   },
   "private": true,
   "dependencies": {

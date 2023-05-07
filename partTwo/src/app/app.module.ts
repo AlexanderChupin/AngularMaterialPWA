@@ -55,7 +55,7 @@ import { AmplifyAuthenticatorModule } from '@aws-amplify/ui-angular';
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: true}), //environment.production
     HttpClientModule,
     AmplifyAuthenticatorModule
   ],

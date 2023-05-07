@@ -20,6 +20,7 @@
         class="toolbar"
         [class.app-is-mobile]="mobileQuery.matches"
         color="primary">
+
         <button
           mat-icon-button
           aria-label="Menu"
@@ -29,6 +30,12 @@
         </button>
         {{title}}
         <div class="fill-space"></div>
+        <button class="button button-primary" (click)="subscribeToPush()">
+          subscribeToPush
+        </button>
+        <button class="button button-primary" (click)="subscribeToNotificationClicks()">
+          subscribeToNotificationClicks
+        </button>
         <div class="server-status-container">
           <button mat-fab [color]="(_alcserverService.stateForIcon| async)" aria-label="Server state" routerLink="manage/sql" data-cy="Server state"> <!--[disabled]="!(_alcserverService.stateForIcon| async)"-->
             <mat-icon>wifi</mat-icon>

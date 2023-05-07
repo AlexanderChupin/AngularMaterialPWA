@@ -19,5 +19,6 @@ export const environment = {
   intRetries_websocket: 2, //ALC. number of retry series for for websocket reconnect before going to ping-pong timeout
   ping_pong_websocket_timeout: 120000, //ALC. msec, ping-pong websocket requests
   //ALC. https://stackblitz.com/edit/angular-logger-service
-  LOG_LEVEL: 'INFO'
+  LOG_LEVEL: 'INFO',
+  VAPID: {"publicKey":"BNuwFb3APzhdATR65rkgwmONMHEwKbZeQgY-eJuj3tNBM-_H4ttCn3TgjLvYEY3QYvS2sMWkCWQZpBqOGm4m7vI","privateKey":"SP2GjghFsSOYHknULxFka4LrKPfSOG-l_GxqJdOYijk"}
 };

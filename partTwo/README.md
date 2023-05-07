@@ -173,3 +173,12 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ## ALC. Learning Material
   - ALC tested. Submitting form controls [Using Forms in Mean Stack \- javatpoint](https://www.javatpoint.com/using-forms-in-mean-stack)
   - ALC tested. CSS styles for tables. [Антигерой CSS\-разметки — свойство «display: table» — Блог HTML Academy](https://htmlacademy.ru/blog/css/display-table-anti-hero)
+
+## ALC. Implementing Push notifications.
+  - ALC tested. Enabling angular service worker on local development environment. [How to run service worker locally with Angular \- Stack Overflow](https://stackoverflow.com/questions/55905172/how-to-run-service-worker-locally-with-angular)
+  - ALC [status of worker](http://localhost:4200/ngsw/state)
+  - ALC Debugging the Angular service worker [Angular \- Service worker in production](https://angular.io/guide/service-worker-devops#debugging-the-angular-service-worker)
+  - ALC tested. Useful tip for running service worker locally by ng serve [How to run service worker locally with Angular \- Stack Overflow](https://stackoverflow.com/questions/55905172/how-to-run-service-worker-locally-with-angular)  
+  - ALC tested. An Official documentation on web-push [web\-push \- npm](https://www.npmjs.com/package/web-push)
+  - ALC useful guide to follow. [Angular Push Notifications: a Complete Step\-by\-Step Guide](https://blog.angular-university.io/angular-push-notifications/)
+  - To study. Troubleshooting web notifications [Notifications Not Shown \- Web Push](https://documentation.onesignal.com/docs/notifications-not-shown-web-push)

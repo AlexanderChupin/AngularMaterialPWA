@@ -1,0 +1,55 @@
+[
+  {
+  "notification": {
+    "title": "ALC. New Notification!",
+    "actions": [
+      {
+        "action": "foo",
+        "title": "Open new tab"
+      }
+    ],
+    "data": {
+      "onActionClick": {
+        "default": {
+          "operation": "openWindow",
+          "url": "https://dev.d2vapkbt72z5fz.amplifyapp.com"
+        }
+      }
+    }
+  }
+}
+,
+  {
+    "endpoint": "https://fcm.googleapis.com/fcm/send/cx8-vujnLOA:APA91bEVomBBSoVJz9DZSsbYw6f7keE2TcI7pDFye3I-DtetnUusEQf41HYiac9zxIsjBxmtG-Ia3IMY4FO0jLs9tFh_ciGSPhR2nPzgPQz9t6BDXAsabkqrKvoaE6Sl7P40kkFaNvnt",
+    "expirationTime": null,
+    "keys": {
+      "p256dh": "BBEyfi72mKpG_T0hQCyWMQBSzV0I80DdUgWpKoKHy0O5QD7frd5KgZ8YhmZYyJjPi4AD2MzaK4QdMzvqnrGNPa0",
+      "auth": "ze5cdYDH8sIu-6HG6EwnRg"
+    }
+  }
+  ,
+  {
+    "endpoint": "https://fcm.googleapis.com/fcm/send/eKvZnRZ4C2Y:APA91bFPMOEBnD4_Ra5UBPDpXlg9Gw2qOJqwzobPbpGwVMdWIDjAxhur3E4gCGSYAbZU75QtqIaRyNv3alo7E0k27Zq-Q1MNxrAT-acbbaVkNnD8_6Eew7BY6L8I37tVMoDOJfqvyEx5",
+    "expirationTime": null,
+    "keys": {
+      "p256dh": "BEJ1ccadg1cWZGQGJEvEdr3Cl1YOTKQSP6qHOpfImGFg-YGtJS2M_wj8-brBDSVBlgosV5f_COA2TNnnhN-vcGY",
+      "auth": "tvmgxMHnD9i4pTdkHGbojA"
+    }
+  }
+  ,
+  {
+    "endpoint": "https://fcm.googleapis.com/fcm/send/d9IxmUpk50Y:APA91bFTp8p_bLMIT3Cf-aKyOL0Lu-eckPBnvMtGn4XkHxgP4wWWMEqCka3z8NWk-XRqufvIzYoZt09DAVqSz3daZecIyYN1V2_vhkYJ7x-deX1Jj2_lSpiIqSmWRPepDIl6uspZJogY",
+    "expirationTime": null,
+    "keys": {
+      "p256dh": "BIyU8ErPMPc7MA7-K2CZsdqRTr_UzQeDNlzubkORuYMPJlEq89uDBJIl-YvKM5M_ltrTK9Fcr-UGh4iSi4DTFs8",
+      "auth": "OkjR28KrjbrqRg60bu8DWw"
+    }
+  },
+  {
+  endpoint "https://fcm.googleapis.com/fcm/send/dN4LgLi4k0U:APA91bHAogkp7ciU4C02pozHHq4g68jFXooHzdUnfBwuh_o9ywhPFd7kHD2jvAGp5Fw81IpDdQ_O0fMP8_xzBjcs_lY07L2MntAcO-AJ1DFH0co172tJUYsV3emBZf1F_9iEQSMtVOjs"
+  expirationTime = null,
+  keys = Object {p256dh: "BEjUeEmtDKOC5fwen-JeNmKDuRBxmDct3kRdOlEvobqqrKKj-QAQc7KNGvsC26vdxqEoMRN7bwzVBzCpwtVVJYQ", auth: "m6nR0u7MhOZTa4zdmnMAyA"}
+  p256dh = "BEjUeEmtDKOC5fwen-JeNmKDuRBxmDct3kRdOlEvobqqrKKj-QAQc7KNGvsC26vdxqEoMRN7bwzVBzCpwtVVJYQ"
+  auth = "m6nR0u7MhOZTa4zdmnMAyA"
+  }
+]

@@ -28,7 +28,7 @@ export class AuthComponent implements OnInit {
       }
     });
     Auth.currentAuthenticatedUser()
-      .then(() => {
+      .then((cognitoUser) => {
         this._router.navigate(['auth/profile']);
       })
       .catch(() => {});
